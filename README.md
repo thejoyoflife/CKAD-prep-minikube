@@ -78,12 +78,11 @@ set expandtab
 set tabstop=2 softtabstop=2 shiftwidth=2
 set number ruler
 ```
-- Setting up shortcuts, this is helpful in case if you close the terminal accidentally. Spaces are very important, treat them with caution when typing.
+- Setting up shortcuts, this is helpful in case if you close the terminal accidentally. Spaces are very important, treat them with caution when typing. The `alias kn` can be found here `https://kubernetes.io/docs/reference/kubectl/cheatsheet/`. Search with keyword `cheat` in the k8s official doc to land on this page.
 ```
 alias k=kubectl
 export do="--dry-run=client -o yaml"
-getns() { k config view | grep 'namespace'; }
-setns() { k config set-context --current --namespace="$1"; }
+alias kn='f() { [ "$1" ] && kubectl config set-context --current --namespace $1 || kubectl config view --minify | grep namespace | cut -d" " -f6 ; } ; f'
 tmp() { k run tmp --restart=Never --rm --stdin -it $1 -- sh; }
 ```
 - Here is what I used to do everyday -  
@@ -109,3 +108,7 @@ tmp() { k run tmp --restart=Never --rm --stdin -it $1 -- sh; }
     - minikube addons enable ingress-dns
     - minikube tunnel 
         - keep this running in the terminal.
+
+# Tips:
+- In doubt use -h flag while using 
+- https://kubernetes.io/docs/reference/kubectl/cheatsheet/ - use the kn function to work with namespaces during exam.
