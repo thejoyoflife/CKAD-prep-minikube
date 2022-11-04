@@ -110,5 +110,5 @@ tmp() { k run tmp --restart=Never --rm --stdin -it $1 -- sh; }
         - keep this running in the terminal.
 
 # Tips:
-- In doubt use -h flag while using 
+- In doubt use -h flag while using kubectl
 - https://kubernetes.io/docs/reference/kubectl/cheatsheet/ - use the kn function to work with namespaces during exam.

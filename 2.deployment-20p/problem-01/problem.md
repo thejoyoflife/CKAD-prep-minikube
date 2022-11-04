@@ -1,3 +1,6 @@
+- Create the test environment by using `k apply -f env.yml`
+- Switch to ch2p01
+
 1. Create a Job with an image node which prints node version and also verifies there is a pod created for this job
 2. Get the logs of the job just created
 3. Output the yaml file for the Job with the image busybox which echos “Hello I am from job”
