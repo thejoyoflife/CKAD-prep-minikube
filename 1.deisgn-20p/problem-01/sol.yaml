@@ -10,9 +10,9 @@ spec:
   - args:
     - sh
     - -c
-    - while true; do echo 'Hello at $date' >> /var/log/index.html; sleep 5; done
+    - while true; do dt=$(date);echo "Hello at $dt" > /var/log/index.html; sleep 5; done
     image: busybox
-    name: multic2
+    name: busybox
     resources: {}
     volumeMounts:
     - mountPath: /var/log

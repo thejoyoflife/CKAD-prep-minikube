@@ -6,41 +6,4 @@
 5.  Run command ls in the third cotnainer `busybox2` of the pod `multic`.
 6. Show metrics of the `multic` pod containers and puts them into the file.log.
 7. Create a Pod named `multic2` with main container busybox and which executes this `while true; do echo ‘Hi I am from Main container’ >> /var/log/index.html; sleep 5; done` and with sidecar container with nginx image which exposes on port 80. Use emptyDir Volume and mount this volume on path /var/log for busybox and on path /usr/share/nginx/html for nginx container. Verify both containers are running.
-```
-apiVersion: v1
-kind: Pod
-metadata:
-  creationTimestamp: null
-  labels:
-    run: multic2
-  name: multic2
-spec:
-  containers:
-  - args:
-    - sh
-    - -c
-    - while true; do echo 'Hello at ' >> /var/log/index.html; sleep 5; done
-    image: busybox
-    name: multic2
-    resources: {}
-    volumeMounts:
-    - mountPath: /var/log
-      name: web
-  - name: nginx
-    image: nginx
-    volumeMounts:
-    - mountPath: /usr/share/nginx/html
-      name: web
-    ports:
-      - name: web-port
-        containerPort: 80
-
-  dnsPolicy: ClusterFirst
-  restartPolicy: Always
-  volumes:
-  - name: web
-    emptyDir: {}
-status: {}
-
-```
 8. Exec into the `busybox` containers and verify that `/var/log/index.html` exists, then send a http request to `localhost:80` and ensure you get 2xx response. Finally enter into the `nginx` container and find the content in the file `/usr/share/nginx/html`.

@@ -32,9 +32,9 @@ spec:
   - args:
     - sh
     - -c
-    - while true; do echo 'Hello at ' >> /var/log/index.html; sleep 5; done
+    - while true; do dt=$(date);echo "Hello at $dt" > /var/log/index.html; sleep 5; done
     image: busybox
-    name: multic2
+    name: busybox
     resources: {}
     volumeMounts:
     - mountPath: /var/log
@@ -57,5 +57,5 @@ status: {}
 
 ```
 8. Exec into the `busybox` containers and verify that `/var/log/index.html` exists, then send a http request to `localhost:80` and ensure you get 2xx response. Finally enter into the `nginx` container and find the content in the file `/usr/share/nginx/html`.
-    - k exec multic2 -it -- cat /var/log/index.html
-    - k exec multic2 -it -- wget -O- http://localhost -T 2
+    - k exec multic2 -c busybox -it -- cat /var/log/index.html
+    - k exec multic2 -c busybox -it -- wget -O- http://localhost -T 2
