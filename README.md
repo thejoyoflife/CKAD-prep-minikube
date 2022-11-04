@@ -7,13 +7,6 @@ minikube version: v1.26.1
 commit: 62e108c3dfdec8029a890ad6d8ef96b6461426dc
 ```
 
-
-## Courses
-- https://www.udemy.com/course/certified-kubernetes-application-developer/
-- https://acloudguru.com/course/certified-kubernetes-application-developer-ckad
-
-
-
 ## Syllabus
 #### Application Design and Build 20%
 
@@ -56,17 +49,19 @@ commit: 62e108c3dfdec8029a890ad6d8ef96b6461426dc
 - https://medium.com/bb-tutorials-and-thoughts/practice-enough-with-these-questions-for-the-ckad-exam-2f42d1228552
 - https://codeburst.io/kubernetes-ckad-weekly-challenges-overview-and-tips-7282b36a2681
 
-**I am ever grateful to the authors of these contents who has done tremendous job to provide insighful practice problems for doing hands-on to prepare for the CKAD exam. In this repo, I have borrowed ideas from all those practice problems.**
+**I am ever grateful to the authors of these contents who have done tremendous job to provide insighful practice problems for doing hands-on to prepare for the CKAD exam. In this repo, I have borrowed ideas from all those practice problems.**
 
 **Some of the practice problems might seem redundant, so that it it reinforeces your learing, makes you fluent with using the commnads and documentation before the exam.**
 
 # Study plan
 This study plan is only applicable if you are an absolute k8s begineer like me.
+## Courses:
 - `https://www.udemy.com/course/learn-kubernetes/` - I started with this because I was an absolute begineer. TechWithNana youtube channel also helped me grasping some of the concepts
 - https://www.udemy.com/course/certified-kubernetes-application-developer/ `exam specific preperation`
 - https://acloudguru.com/course/certified-kubernetes-application-developer-ckad `exam specific preparation`
 
-# 7 days before the exam
+## Practice
+Here I am sharing a 7 days practice program that I followed.
 - `Day 1 - 2` Do all these hands ons in this repository. **DO NOT USE TWO MONITORS TO PRACTICE THESE PROBLEMS, USE JUST THE FIREFOX BROWSER AND A SHELL**
 -  `Day 3 - 5`Take the mock exam at `https://killer.sh` - `A must used resource for the exam`
 - `Day 6` https://killer.sh/faq .Read the documentation that comes with the mock exam. Consolidation, review your works from day 1 - 5.
