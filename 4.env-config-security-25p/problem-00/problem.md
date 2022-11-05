@@ -42,6 +42,8 @@
 13. Create pod with an nginx image named `nginx03` and configure the pod with capabilities NET_ADMIN and SYS_TIME verify the capabilities
     - k run nginx03 --image=nginx $do > nginx03.yml
     - vi nginx03.yml `search the doc by security context and look for capabilities`
+    -  k exec nginx03 -it -- cat /proc/1/status | grep 'CapPrm' ` you should see CapPrm: 00000000aa0435fb`
+    -  k exec nginx03 -it -- cat /proc/1/status | grep 'CapEff' `you should see CapEff: 00000000aa0435fb`
     - Please take note, the capabilities needs to be added at the container level, not the pod level.
 14. Create a Pod nginx named `nginx04` and specify a memory request and a memory limit of 100Mi and 200Mi respectively, CPU request and a CPU limit of 0.5 and 1 respectively.
     - k run nginx04 --image nginx $do > nginx04.yml
