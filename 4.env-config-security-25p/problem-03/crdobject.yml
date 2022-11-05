@@ -1,0 +1,8 @@
+apiVersion: "stable.example.com/v1"
+kind: Operator
+metadata:
+  name: mycrdobject
+spec:
+  name: najim
+  email: najim.ju@gmail.com
+  age: 10000
