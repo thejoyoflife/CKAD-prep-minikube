@@ -77,4 +77,11 @@ pod9   1/1     Running   0          133m   10.244.205.246   minikube-m02   <none
     - k $tmp -n ch5p01-animals --labels=tag=mango -- wget -O- 10.244.205.233  -T 2 `returns  wget: download timed out, wrong combination of namespace and tag`
 
 - pod8 with label `tag=subtask8` in the `ch5p01-secured` should only be accessible from the pods within the sanme namespace.
+    - k apply -f netpol8.yml
+    - k describe netpol netpol8 `always a good practice to check this for netpol resource`
+    - k $tmp -- wget -O- 10.244.205.232  -T 2 `returns 2xx because it's the same namespace`
+    - k $tmp -n ch5p01-universe -- wget -O- 10.244.205.232  -T 2 `returns wget: download timed out, because traffic from outside the same napespace is not allowed.`
 - pod9 with label `tag=subtask9` in the `ch5p01-secured` should not be accepting traffic from any pod within the same namespace, but the pod should accept traffic from any pod from any other namespace.
+    - This is a tricky one. one way to achieve this is to deny egress for all pods in the same namespace to itself.
+    - egress to google check `10.244.205.246`
+    - 
