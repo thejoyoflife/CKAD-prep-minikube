@@ -1,0 +1,25 @@
+# do not send traffic to your own namespace!
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: netpol9
+  namespace: ch5p01-secured
+spec:
+  podSelector:
+    matchLabels:
+      tag: subtask9
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ch5p01-secured
+    - to:
+        ports:
+          - protocol: TCP
+            port: 53
+          - protocol: UDP
+            port: 53
+    
+      

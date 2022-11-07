@@ -5,8 +5,8 @@ for myns in ch5p01-secured ch5p01-trusted ch5p01-internal ch5p01-exttrust ch5p01
 kn ch5p01-secured
 
 
-for idx in `seq 1 9`; do k run pod$idx --image=nginx --port=80 --labels=tag=subtask$idx;done;
-# for idx in `seq 1 9`; do k delete pod pod$idx ;done;
+for idx in `seq 1 8`; do k run pod$idx --image=nginx --port=80 --labels=tag=subtask$idx;done;
+# for idx in `seq 1 8`; do k delete pod pod$idx ;done;
 ```
 ```
 NAME   READY   STATUS    RESTARTS   AGE    IP               NODE           NOMINATED NODE   READINESS GATES   LABELS
@@ -18,7 +18,6 @@ pod5   1/1     Running   0          133m   10.244.205.235   minikube-m02   <none
 pod6   1/1     Running   0          133m   10.244.205.245   minikube-m02   <none>           <none>            tag=subtask6
 pod7   1/1     Running   0          133m   10.244.205.233   minikube-m02   <none>           <none>            tag=subtask7
 pod8   1/1     Running   0          133m   10.244.205.232   minikube-m02   <none>           <none>            tag=subtask8
-pod9   1/1     Running   0          133m   10.244.205.246   minikube-m02   <none>           <none>            tag=subtask9
 ```
 - pod1 with label `tag=subtask1` in the `ch5p01-secured` should only be accessible from pods with label `tag=withinNS` within the same namespace  ---------------------->[doc01]
     - k apply -f netpol1.yml 
@@ -81,7 +80,4 @@ pod9   1/1     Running   0          133m   10.244.205.246   minikube-m02   <none
     - k describe netpol netpol8 `always a good practice to check this for netpol resource`
     - k $tmp -- wget -O- 10.244.205.232  -T 2 `returns 2xx because it's the same namespace`
     - k $tmp -n ch5p01-universe -- wget -O- 10.244.205.232  -T 2 `returns wget: download timed out, because traffic from outside the same napespace is not allowed.`
-- pod9 with label `tag=subtask9` in the `ch5p01-secured` should not be accepting traffic from any pod within the same namespace, but the pod should accept traffic from any pod from any other namespace.
-    - This is a tricky one. one way to achieve this is to deny egress for all pods in the same namespace to itself.
-    - egress to google check `10.244.205.246`
-    - 
+
