@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: netpol7
+  namespace: ch5p01-secured
+spec:
+  podSelector:
+    matchLabels:
+      tag: subtask7
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              tag: fox 
+          namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ch5p01-animals
+    - from:
+        - podSelector:
+            matchLabels:
+              tag: mango 
+          namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ch5p01-fruits
+      
