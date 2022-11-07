@@ -55,6 +55,13 @@ pod9   1/1     Running   0          133m   10.244.205.246   minikube-m02   <none
     - k $tmp -n ch5p01-universe --labels=tag=insidetrust -- wget -O- 10.244.205.235 -T 2 `returns wget: download timed out, though label is correct, it's from the different namespace`
     - **VVI - definitive proof that when using OR(podSelector,namespaceSelector) the podSelector defines rule for it's own namespace(since same label but different namespace could not connect) and the namespaceSelector allows all pods from that namespace(since pod without any label from ch5p01-universe namespace was able to connect )**. For AND(podSelector,namespaceSelector) example, see `subtask4`.
 - pod6 with label `tag=subtask6` in the `ch5p01-secured` should only be accessible from pods with label `tag=globaltrust` within *any namespace*  AND from all pods from namespace `ch5p01-exttrust-2`.  
+    - k get ns ch5p01-exttrust-2 --show-labels
+    - k apply -f netpol6.yml 
+    - k $tmp -n ch5p01-exttrust-2 -- wget -O- 10.244.205.245 -T 2 `returns 2xx, see all pods in the namespace ch5p01-exttrust-2 is reachable regardless of label!`
+    - k $tmp -- wget -O- 10.244.205.245 -T 2 `returns wget: download timed out, outside ch5p01-exttrust-2 namespace, it does not allow pod without the label tag=globaltrust, not from it's own namespace`
+    - k $tmp --labels=tag=globaltrust -- wget -O- 10.244.205.245 -T 2 `returns 2xx since it has the right tag although from the same namespace`
+    - k $tmp -n ch5p01-universe --labels=tag=globaltrust -- wget -O- 10.244.205.245 -T 2 `returns 2xx, from an outside namespace since it has the correct label it can reach`
+    - k $tmp -n ch5p01-universe -- wget -O- 10.244.205.245 -T 2 `returns  wget: download timed out because it's not from ch5p01-exttrust-2 namespace and it deos not have the correct label.`
 - pod7 with label `tag=subtask7` in the `ch5p01-secured` should only be accessible from pods with label `tag: fox` from namespace `ch5p01-animals` AND from pods with label `tag: mango` from namespace `ch5p01-fruits`.
 - pod8 with label `tag=subtask8` in the `ch5p01-secured` should only be accessible from the pods within the sanme namespace.
 - pod9 with label `tag=subtask9` in the `ch5p01-secured` should not be accepting traffic from any pod within the same namespace, but the pod should accept traffic from any pod from any other namespace.

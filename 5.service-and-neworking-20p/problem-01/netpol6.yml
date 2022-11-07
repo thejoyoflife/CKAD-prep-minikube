@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: netpol6
+  namespace: ch5p01-secured
+spec:
+  podSelector:
+    matchLabels:
+      tag: subtask6
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              tag: globaltrust # from any other namespace than ch5p01-exttrust-2, this label must need to be there.
+          namespaceSelector: {}
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ch5p01-exttrust-2 # the label should not matter from this namespace
+      
