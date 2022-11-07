@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: netpol1
+  namespace: ch5p01-secured
+spec:
+  podSelector:
+    matchLabels:
+      tag: subtask1
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              tag: withinNS
+      
