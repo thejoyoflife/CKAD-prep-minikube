@@ -1,7 +1,7 @@
 - setup the environment by running the following commands
 ```
-for myns in ch5p01-secured ch5p01-trusted ch5p01-internal ch5p01-exttrust ch5p01-animals ch5p01-fruits ch5p01-universe; do k create ns $myns; done
-# for myns in ch5p01-secured ch5p01-trusted ch5p01-internal ch5p01-exttrust ch5p01-animals ch5p01-fruits ch5p01-universe; do k delete ns $myns; done
+for myns in ch5p01-secured ch5p01-trusted ch5p01-internal ch5p01-exttrust ch5p01-exttrust-2 ch5p01-animals ch5p01-fruits ch5p01-universe; do k create ns $myns; done
+# for myns in ch5p01-secured ch5p01-trusted ch5p01-internal ch5p01-exttrust ch5p01-exttrust-2 ch5p01-animals ch5p01-fruits ch5p01-universe; do k delete ns $myns; done
 kn ch5p01-secured
 
 
@@ -22,11 +22,13 @@ pod9   1/1     Running   0          133m   10.244.205.246   minikube-m02   <none
 ```
 - pod1 with label `tag=subtask1` in the `ch5p01-secured` should only be accessible from pods with label `tag=withinNS` within the same namespace  ---------------------->[doc01]
     - k apply -f netpol1.yml 
+    - describe netpol netpol1 `always a good practice to check this for netpol resource`
     - k $tmp --labels=tag=withinNS -- wget -O- 10.244.205.229 -T 2`returns 2xx`
     - k $tmp -- wget -O- 10.244.205.229 -T 2 `returns wget: download timed out - same namespace but does not have the correct label`
     - $tmp --labels=tag=withinNS -n ch5p01-universe -- wget -O- 10.244.205.229 -T 2 `returns wget: download timed out - different namespace, having correct label does not matter`
 - pod2 with label `tag=subtask2` in the `ch5p01-secured` should only be accessible from pods with label `tag=outsideNS` from any namespace.
     - k apply -f netpol2.yml 
+    - describe netpol netpol2 `always a good practice to check this for netpol resource`
     - k $tmp --labels=tag=outsideNS -- wget -O- 10.244.205.228 -T 2 `returns 2xx`
     - k $tmp -- wget -O- 10.244.205.228 -T 2 `returns wget: download timed out - same namespace but does not have the correct label`
     - k $tmp --labels=tag=outsideNS -n ch5p01-universe -- wget -O- 10.244.205.228 -T 2 `returns 2xx`
@@ -34,18 +36,25 @@ pod9   1/1     Running   0          133m   10.244.205.246   minikube-m02   <none
 - pod3 with label `tag=subtask3` in the `ch5p01-secured` should only be accessible from pods within the namespace `ch5p01-trusted`. ---------------------->[doc02]
     - k  get ns ch5p01-trusted --show-labels
     - k apply -f netpol3.yml 
+    - describe netpol netpol3 `always a good practice to check this for netpol resource`
     - k $tmp -n ch5p01-trusted -- wget -O- 10.244.205.218 -T 2 `returns 2xx`
     - k $tmp -- wget -O- 10.244.205.218 -T 2 `wget: download timed out , even from the same same namespace , the pods are not allowed`
     - k $tmp -n ch5p01-universe -- wget -O- 10.244.205.218 -T 2 `wget: download timed out , a different namespace than the allowed one`
 - pod4 with label `tag=subtask4` in the `ch5p01-secured` should only be accessible from the pods label `tag=allowed` within the namespace `ch5p01-internal` .  ---------------------->[doc03A]
     - get ns ch5p01-internal --show-labels
     - k apply -f netpol4.yml 
+    - describe netpol netpol4 `always a good practice to check this for netpol resource`
     - k $tmp -n ch5p01-internal --labels=tag=allowed -- wget -O- 10.244.205.231 -T 2 `returns 2xx`
     - k $tmp --labels=tag=allowed -- wget -O- 10.244.205.231 -T 2 `returns wget: download timed out because of the right label but wrong namepsace (event from the same one)`
     - k $tmp -n ch5p01-internal -- wget -O- 10.244.205.231 -T 2 `returns  wget: download timed out because of the right namespace but wrong label`
-- pod5 with label `tag=subtask5` in the `ch5p01-secured` should only be accessible from the pods with label `tag=insidetrust` within *the same namespace* AND from all pods from namespace `ch5p01-exttrust`.  ---------------------->[doc03B?]
-    - 
-- pod6 with label `tag=subtask6` in the `ch5p01-secured` should only be accessible from pods with label `tag=globaltrust` within *any namespace*  AND from all pods from namespace `ch5p01-exttrust`.  ---------------------->[doc03B?]
+- pod5 with label `tag=subtask5` in the `ch5p01-secured` should only be accessible from the pods with label `tag=insidetrust` within *the same namespace* AND from all pods from namespace `ch5p01-exttrust`.[doc03B]
+    - k get ns ch5p01-exttrust --show-labels
+    - describe netpol netpol5 `always a good practice to check this for netpol resource`
+    - k $tmp --labels=tag=insidetrust -- wget -O- 10.244.205.235 -T 2 `returns 2xx`
+    - k $tmp -n ch5p01-exttrust -- wget -O- 10.244.205.235 -T 2 `returns 2xx, notice any pod regardless of the label from ch5p01-exttrust namespace is allowed`
+    - k $tmp -n ch5p01-universe --labels=tag=insidetrust -- wget -O- 10.244.205.235 -T 2 `returns wget: download timed out, though label is correct, it's from the different namespace`
+    - **VVI - definitive proof that when using OR(podSelector,namespaceSelector) the podSelector defines rule for it's own namespace(since same label but different namespace could not connect) and the namespaceSelector allows all pods from that namespace(since pod without any label from ch5p01-universe namespace was able to connect )**. For AND(podSelector,namespaceSelector) example, see `subtask4`.
+- pod6 with label `tag=subtask6` in the `ch5p01-secured` should only be accessible from pods with label `tag=globaltrust` within *any namespace*  AND from all pods from namespace `ch5p01-exttrust-2`.  
 - pod7 with label `tag=subtask7` in the `ch5p01-secured` should only be accessible from pods with label `tag: fox` from namespace `ch5p01-animals` AND from pods with label `tag: mango` from namespace `ch5p01-fruits`.
 - pod8 with label `tag=subtask8` in the `ch5p01-secured` should only be accessible from the pods within the sanme namespace.
 - pod9 with label `tag=subtask9` in the `ch5p01-secured` should not be accepting traffic from any pod within the same namespace, but the pod should accept traffic from any pod from any other namespace.
