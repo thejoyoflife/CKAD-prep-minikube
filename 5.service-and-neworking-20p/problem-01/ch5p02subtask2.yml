@@ -1,0 +1,41 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ch5p02subtask2
+spec:
+  rules:
+  - host: onlinestore.com
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/books"
+        backend:
+          service:
+            name: bookstore
+            port:
+              number: 80
+      - pathType: Prefix
+        path: "/pens"
+        backend:
+          service:
+            name: penstore
+            port:
+              number: 80
+  
+  - host: inventory.com
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/books"
+        backend:
+          service:
+            name: bookinventory
+            port:
+              number: 80
+      - pathType: Prefix
+        path: "/pens"
+        backend:
+          service:
+            name: peninventory
+            port:
+              number: 80

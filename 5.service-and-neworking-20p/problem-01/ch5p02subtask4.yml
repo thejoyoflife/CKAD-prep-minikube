@@ -1,0 +1,164 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ch5-earth
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ch5-mars
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: penny
+  name: penny
+  namespace: ch5-earth
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: penny
+  template:
+    metadata:
+      labels:
+        app: penny
+    spec:
+      containers:
+      - image: ivplay4689/reflect
+        name: reflect
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: penny
+  name: penny
+  namespace: ch5-earth
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: penny
+status:
+  loadBalancer: {}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ch5p02subtask2
+  namespace: ch5-earth
+spec:
+  defaultBackend:
+    service:
+      name: ch5404
+      port:
+        number: 80
+  rules:
+  - host: bigbangtheory.com
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/penny"
+        backend:
+          service:
+            name: penny
+            port:
+              number: 80
+      - pathType: Prefix
+        path: "/sheldon"
+        backend:
+          service:
+            name: sheldon
+            port:
+              number: 80
+  
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: sheldon
+  name: sheldon
+  namespace: ch5-mars
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sheldon
+  template:
+    metadata:
+      labels:
+        app: sheldon
+    spec:
+      containers:
+      - image: ivplay4689/reflect
+        name: reflect
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: sheldon
+  name: sheldon
+  namespace: ch5-mars
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: sheldon
+status:
+  loadBalancer: {}
+
+--- 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: ch5404
+  name: ch5404
+  namespace: ch5-earth
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ch5404
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: ch5404
+    spec:
+      containers:
+      - image: ivplay4689/reflect:404
+        name: reflect
+        ports:
+        - containerPort: 80
+      
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: ch5404
+  name: ch5404
+  namespace: ch5-earth
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: ch5404
+status:
+  loadBalancer: {}
