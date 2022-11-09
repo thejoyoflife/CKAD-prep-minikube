@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: pod2
+  name: pod2
+spec:
+  containers:
+  - image: nginx
+    name: pod2
+    resources: {}
+    env:
+        - name: indoor
+          valueFrom:
+            configMapKeyRef:
+              name: cfgfromfile
+              key: indoor
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
