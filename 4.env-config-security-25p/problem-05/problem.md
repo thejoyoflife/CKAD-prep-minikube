@@ -1,0 +1,4 @@
+- There us a custom resource definition named `customresourcedefinition.apiextensions.k8s.io/products.timelyship.com`. You can list all the resources of this CRD using  `k get pdct -A`. 
+- There is a pod running in the `ch4p05` namepsace that is trying to fetch all the resources of type `customresourcedefinition.apiextensions.k8s.io/products.timelyship.com`.
+- Check the log of the pod and see whats the issue. 
+- Fix the issue.

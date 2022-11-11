@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: pod5
+  name: pod5
+spec:
+  containers:
+  - image: nginx
+    name: pod5
+    resources: {}
+    envFrom:
+        - configMapRef:
+            name: cfgfromenvfile
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}

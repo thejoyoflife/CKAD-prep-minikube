@@ -1,0 +1,42 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: god
+rules:
+- apiGroups: ["*"]
+  resources: ["*"]
+  verbs: ["*"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+# This cluster role binding allows anyone in the "manager" group to read secrets in any namespace.
+kind: ClusterRoleBinding
+metadata:
+  name: godbinding
+subjects:
+- kind: ServiceAccount
+  name: allperm 
+  namespace: ch4p05
+roleRef:
+  kind: ClusterRole
+  name: god
+  apiGroup: rbac.authorization.k8s.io
+--- 
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: listcrd
+  name: listcrd
+  namespace: ch4p05
+spec:
+  serviceAccountName: allperm
+  containers:
+  - env:
+    - name: QUERY_PATH
+      value: apis/timelyship.com/v1/products
+    image: ivplay4689/k8sapi
+    name: listcrd
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Never
+status: {}
