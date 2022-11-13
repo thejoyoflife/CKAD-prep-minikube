@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysfset
+spec:
+  selector:
+    matchLabels:
+      app: hls # has to match .spec.template.metadata.labels
+  serviceName: "hls"
+  replicas: 3 # by default is 1
+  template:
+    metadata:
+      labels:
+        app: hls # has to match .spec.selector.matchLabels
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+          name: web
+        volumeMounts:
+        - name: www
+          mountPath: /usr/share/nginx/html
+      initContainers:
+      - name: init
+        image: busybox:1.28
+        command: ['sh', '-c','echo "hello from $HOSTNAME" > /usr/share/nginx/html/index.html']
+        volumeMounts:
+          - name: www
+            mountPath: /usr/share/nginx/html
+  volumeClaimTemplates:
+  - metadata:
+      name: www
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "standard"
+      resources:
+        requests:
+          storage: 4Mi

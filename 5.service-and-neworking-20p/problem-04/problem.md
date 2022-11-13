@@ -1,0 +1,1 @@
+- create ingress to map /products to products service and /tickets to tickets service. In either case, map the urls to  / inside the services.

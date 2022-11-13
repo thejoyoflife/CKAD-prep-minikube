@@ -1,0 +1,48 @@
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: minimal-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  # ingressClassName: nginx-example # mention it if we have multiple and we want to explicit about it.
+  defaultBackend:
+      service:
+        name: default404
+        port:
+          number: 80
+  rules:
+  - host: daybeforeexam.com
+    http:
+      paths:
+      - path: /products(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: products
+            port:
+              number: 80
+      - path: /tickets(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: tickets
+            port:
+              number: 80
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: daybeforeexam404
+            port:
+              number: 80
+  # - http:
+  #     paths:
+  #     - pathType: Prefix
+  #       path: /
+  #       backend:
+  #         service:
+  #           name: unmatched404
+  #           port:
+  #             number: 80

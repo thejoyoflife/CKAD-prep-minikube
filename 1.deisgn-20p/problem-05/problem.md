@@ -1,0 +1,1 @@
+- Create a priority class , create a resource quota that allows max 2 pods from that priority class, create 3 pods of that pririty class and see the error message
