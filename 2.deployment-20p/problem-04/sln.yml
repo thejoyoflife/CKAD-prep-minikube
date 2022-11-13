@@ -1,0 +1,63 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mypv
+spec:
+  storageClassName: ""
+  claimRef:
+    name: mypvc
+    namespace: ch4p05
+  capacity:
+    storage: 4Mi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  hostPath:
+    path: "/mnt/data"
+
+--- 
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mypvc
+spec:
+  storageClassName: "" 
+  volumeName: mypv
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 4Mi
+
+# --- 
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   name: pv0003
+# spec:
+#   storageClassName: ""
+#   capacity:
+#     storage: 8Mi
+#   accessModes:
+#     - ReadWriteOnce
+#   persistentVolumeReclaimPolicy: Retain
+#   claimRef:
+#     namespace: default # This is super important to mention, without this binding does not work!!!!
+#     name: myclaim
+#   hostPath:
+#     path: "/mnt/data"
+# ---
+
+#  kind: PersistentVolumeClaim
+#  apiVersion: v1
+#  metadata:
+#    name: myclaim
+#  spec:
+#    storageClassName: ""
+#    accessModes:
+#      - ReadWriteOnce
+#    resources:
+#      requests:
+#        storage:  8Mi
