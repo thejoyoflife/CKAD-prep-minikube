@@ -1,0 +1,2 @@
+- outbound from frontend to backend on a certein port but allow all DNS resolution
+- outbound from frontend to backend on a certein port but allow all DNS resolution via kubedns
