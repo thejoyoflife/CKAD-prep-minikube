@@ -10,7 +10,7 @@ spec:
   - args:
     - sh
     - -c
-    - while true; do dt=$(date);echo "Hello at $dt" > /var/log/index.html; sleep 5; done
+    - while true; do echo "Hi I am from Main container" >> /var/log/index.html; sleep 5; done
     image: busybox
     name: busybox
     resources: {}
@@ -25,7 +25,6 @@ spec:
     ports:
       - name: web-port
         containerPort: 80
-
   dnsPolicy: ClusterFirst
   restartPolicy: Always
   volumes:

@@ -89,8 +89,8 @@
     pod03   1/1     Running   0          21m   ap-southeast-01   t3small    gp2
     ```
 12. Find all the pods which has a label instance= c4Large,m4large or t3small AND storage=gp2 or io3
-    - k get pods -l='instance in (c4Large,m4large,t3small)','storage in (gp2,io3)'
-    - k get pods -l='instance in (c4Large,m4large,t3small)','storage in (gp2,io3)' -L instance,storage
+    - k get pods -l='instance in (c4Large,m4large,t3small),storage in (gp2,io3)'
+    - k get pods -l='instance in (c4Large,m4large,t3small),storage in (gp2,io3)' -L instance,storage
     ```
     NAME    READY   STATUS    RESTARTS   AGE   INSTANCE   STORAGE
     pod01   1/1     Running   0          23m   c4Large    gp2
@@ -134,7 +134,7 @@
 15. Read all the annotations of a pod anmed `podtolabel`
     - k annotate pod podtolabel --list
 16. Annotate all the pods has label storage and annotate them with costly: true
-    - k annotate pod -l=storage  costly=true
+    - k annotate pod -l=storage costly=true
     ```
     pod/pod01 annotated
     pod/pod04 annotated

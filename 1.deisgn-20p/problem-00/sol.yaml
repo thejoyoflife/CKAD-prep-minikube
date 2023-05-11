@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: pod2
+  name: pod2
+  namespace: ch1p00
+spec:
+  containers:
+  - image: busybox
+    imagePullPolicy: IfNotPresent
+    name: pod2
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Never
+status: {}
