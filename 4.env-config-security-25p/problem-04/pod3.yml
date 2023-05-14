@@ -11,12 +11,12 @@ spec:
     name: pod3
     resources: {}
     volumeMounts:
-      - name: vol
-        mountPath: /etc/config
+    - name: vol
+      mountPath: /etc/config
   dnsPolicy: ClusterFirst
   restartPolicy: Always
   volumes:
-    - name: vol
-      configMap:
-        name: cfgfromfile
+  - name: vol
+    configMap:
+      name: cfgfromfile
 status: {}

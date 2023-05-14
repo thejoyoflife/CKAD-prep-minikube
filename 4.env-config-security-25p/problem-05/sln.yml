@@ -1,24 +1,24 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: god
+  name: pdct-list
 rules:
-- apiGroups: ["*"]
-  resources: ["*"]
-  verbs: ["*"]
+- apiGroups: ["timelyship.com"]
+  resources: ["products"]
+  verbs: ["list"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 # This cluster role binding allows anyone in the "manager" group to read secrets in any namespace.
 kind: ClusterRoleBinding
 metadata:
-  name: godbinding
+  name: pdct-list
 subjects:
 - kind: ServiceAccount
-  name: allperm 
+  name: default
   namespace: ch4p05
 roleRef:
   kind: ClusterRole
-  name: god
+  name: pdct-list
   apiGroup: rbac.authorization.k8s.io
 --- 
 apiVersion: v1
@@ -28,8 +28,7 @@ metadata:
     run: listcrd
   name: listcrd
   namespace: ch4p05
-spec:
-  serviceAccountName: allperm
+spec:  
   containers:
   - env:
     - name: QUERY_PATH

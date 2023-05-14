@@ -11,8 +11,8 @@ spec:
     name: pod5
     resources: {}
     envFrom:
-        - configMapRef:
-            name: cfgfromenvfile
+    - configMapRef:
+        name: cfgfromenvfile
   dnsPolicy: ClusterFirst
   restartPolicy: Always
 status: {}

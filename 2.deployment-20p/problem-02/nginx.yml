@@ -7,15 +7,15 @@ metadata:
   name: nginx
 spec:
   volumes:
-    - name: data
-      persistentVolumeClaim:
-        claimName: task-pv-claim
+  - name: data
+    persistentVolumeClaim:
+      claimName: task-pv-claim
   containers:
   - image: nginx
     name: nginx
     volumeMounts:
-      - mountPath: "/usr/share/nginx/html"
-        name: data
+    - mountPath: "/usr/share/nginx/html"
+      name: data
     resources: {}
   dnsPolicy: ClusterFirst
   restartPolicy: Always

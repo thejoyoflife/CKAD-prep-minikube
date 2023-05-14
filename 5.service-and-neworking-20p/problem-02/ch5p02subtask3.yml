@@ -1,0 +1,265 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: soc-ecomm
+  namespace: ch5p02subtask3
+spec:
+  rules:
+  - host: socialmedia.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: socialmediahome
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
+  - host: picture.socialmedia.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: scoverphoto
+            port:
+              number: 80
+        path: /coverphoto
+        pathType: Prefix
+      - backend:
+          service:
+            name: sprofilepicture
+            port:
+              number: 80
+        path: /profilepicture/10001
+        pathType: Exact
+  - host: '*.socialmedia.com'
+    http:
+      paths:
+      - backend:
+          service:
+            name: socialmedia404
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
+  - host: picture.ecommerceprofile.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: ecoverphoto
+            port:
+              number: 80
+        path: /coverphoto
+        pathType: Prefix
+  - host: '*.ecommerceprofile.com'
+    http:
+      paths:
+      - backend:
+          service:
+            name: socialmedia404
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: socialmediahome
+  name: socialmediahome
+  namespace: ch5p02subtask3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: socialmediahome
+  template:
+    metadata:
+      labels:
+        app: socialmediahome
+    spec:
+      containers:
+      - image: ivplay4689/reflect
+        name: reflect
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: socialmediahome
+  name: socialmediahome
+  namespace: ch5p02subtask3
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: socialmediahome
+status:
+  loadBalancer: {}
+---        
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: scoverphoto
+  name: scoverphoto
+  namespace: ch5p02subtask3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: scoverphoto
+  template:
+    metadata:
+      labels:
+        app: scoverphoto
+    spec:
+      containers:
+      - image: ivplay4689/reflect
+        name: reflect
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: scoverphoto
+  name: scoverphoto
+  namespace: ch5p02subtask3
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: scoverphoto
+status:
+  loadBalancer: {}
+---   
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: sprofilepicture
+  name: sprofilepicture
+  namespace: ch5p02subtask3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sprofilepicture
+  template:
+    metadata:
+      labels:
+        app: sprofilepicture
+    spec:
+      containers:
+      - image: ivplay4689/reflect
+        name: reflect
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: sprofilepicture
+  name: sprofilepicture
+  namespace: ch5p02subtask3
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: sprofilepicture
+status:
+  loadBalancer: {}
+---   
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: socialmedia404
+  name: socialmedia404
+  namespace: ch5p02subtask3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: socialmedia404
+  template:
+    metadata:
+      labels:
+        app: socialmedia404
+    spec:
+      containers:
+      - image: ivplay4689/reflect:404
+        name: reflect
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: socialmedia404
+  name: socialmedia404
+  namespace: ch5p02subtask3
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: socialmedia404
+status:
+  loadBalancer: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: ecoverphoto
+  name: ecoverphoto
+  namespace: ch5p02subtask3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ecoverphoto
+  template:
+    metadata:
+      labels:
+        app: ecoverphoto
+    spec:
+      containers:
+      - image: ivplay4689/reflect
+        name: reflect
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: ecoverphoto
+  name: ecoverphoto
+  namespace: ch5p02subtask3
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: ecoverphoto
+status:
+  loadBalancer: {}
+---  

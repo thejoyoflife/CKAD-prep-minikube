@@ -1,0 +1,8 @@
+apiVersion: stable.example.com/v1
+kind: Operator
+metadata:
+  name: myop
+spec:
+  name: shimul
+  email: thejoyoflife@gmail.com
+  age: 40

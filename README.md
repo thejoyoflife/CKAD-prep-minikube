@@ -83,7 +83,7 @@ set number ruler
 alias k=kubectl
 export do="--dry-run=client -o yaml"
 alias kn='f() { [ "$1" ] && kubectl config set-context --current --namespace $1 || kubectl config view --minify | grep namespace | cut -d" " -f6 ; } ; f'
-tmp() { k run tmp --restart=Never --rm --stdin -it $1 -- sh; }
+tmp() { k run tmp --restart=Never --rm --stdin -it --image $1 -- sh; }
 ```
 - Here is what I used to do everyday -  
     - rm -rf ~/.vimrc fn.sh

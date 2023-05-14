@@ -33,11 +33,12 @@
 13. Update the deployment with the image version 1.16.1 and verify the image and also check the rollout history
     - k set image deploy webapp nginx=nginx:1.16.1
     - k rollout status deploy webapp
+    - k rollout history deploy webapp
 14. Update the deployment with the wrong image version 1.100 and verify something is wrong with the deployment.
   - k set image deploy webapp nginx=nginx:1.100
   - k rollout status deploy webapp `it should block(hang)`
   - k get rs -l=app=webapp
-  - k get rs -l=app=webapp --sort-by=.metadata.creationTimestamp `The last row is the latest one, it should have desired=1,current=1, ready=1`
+  - k get rs -l=app=webapp --sort-by=.metadata.creationTimestamp `The last row is the latest one, it should have desired=1,current=1, ready=0`
 15. Undo the deployment with the previous version and verify everything is Ok
     - k rollout undo deploy webapp
     - k rollout status deploy webapp

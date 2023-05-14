@@ -11,12 +11,13 @@ spec:
     - Ingress
   ingress:
     - from:
+         # from any pod with "globaltrust" tag, or any pod from "ch5p01-exttrust" namespace
         - podSelector:
             matchLabels:
-              tag: globaltrust # from any other namespace than ch5p01-exttrust-2, this label must need to be there.
+              tag: globaltrust
           namespaceSelector: {}
-    - from:
         - namespaceSelector:
             matchLabels:
-              kubernetes.io/metadata.name: ch5p01-exttrust-2 # the label should not matter from this namespace
+              kubernetes.io/metadata.name: ch5p01-exttrust
+        
       

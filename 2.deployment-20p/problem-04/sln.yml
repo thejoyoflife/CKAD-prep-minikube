@@ -4,9 +4,6 @@ metadata:
   name: mypv
 spec:
   storageClassName: ""
-  claimRef:
-    name: mypvc
-    namespace: ch4p05
   capacity:
     storage: 4Mi
   volumeMode: Filesystem
@@ -17,19 +14,21 @@ spec:
     path: "/mnt/data"
 
 --- 
+# As long as the storageClassName and accessModes match, and the resource request size 
+# is within the capacity of a PV, the PVC will automatically be bound with the matched PV
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: mypvc
 spec:
   storageClassName: "" 
-  volumeName: mypv
   accessModes:
     - ReadWriteOnce
+  # volumeName: mypv  # this specifically binds to a PV as long as the criteria match e.g. accessModes, size and SC.
   volumeMode: Filesystem
   resources:
     requests:
-      storage: 4Mi
+      storage: 3Mi # this is to be within the capacity of the PV
 
 # --- 
 # apiVersion: v1

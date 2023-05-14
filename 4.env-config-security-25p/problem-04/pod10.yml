@@ -11,11 +11,11 @@ spec:
     name: pod10
     resources: {}
     env:
-        - name: mynvkeys
-          valueFrom:
-            configMapKeyRef:
-              name: cfgfromfilerenamed
-              key: mynvkeys
+    - name: mynvkeys
+      valueFrom:
+        configMapKeyRef:
+          name: cfgfromfilerenamed
+          key: mynvkeys
   dnsPolicy: ClusterFirst
   restartPolicy: Always
 status: {}

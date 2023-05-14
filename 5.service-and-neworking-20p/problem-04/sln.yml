@@ -8,10 +8,10 @@ metadata:
 spec:
   # ingressClassName: nginx-example # mention it if we have multiple and we want to explicit about it.
   defaultBackend:
-      service:
-        name: default404
-        port:
-          number: 80
+    service:
+      name: default404
+      port:
+        number: 80
   rules:
   - host: daybeforeexam.com
     http:

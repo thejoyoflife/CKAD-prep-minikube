@@ -1,1 +1,1 @@
-- Create a PV named `mypv` and a PVC named `mypvc` and bind `mypvc` with `mypvc`
+- Create a PV named `mypv` and a PVC named `mypvc` and bind `mypvc` with `mypv`

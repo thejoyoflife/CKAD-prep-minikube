@@ -11,11 +11,11 @@ spec:
     name: pod2
     resources: {}
     env:
-        - name: indoor
-          valueFrom:
-            configMapKeyRef:
-              name: cfgfromfile
-              key: indoor
+    - name: indoor
+      valueFrom:
+        configMapKeyRef:
+          name: cfgfromfile
+          key: indoor
   dnsPolicy: ClusterFirst
   restartPolicy: Always
 status: {}

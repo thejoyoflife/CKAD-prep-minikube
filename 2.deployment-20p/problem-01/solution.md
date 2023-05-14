@@ -5,7 +5,7 @@
     - k create job node --image=node -- node -v
     - k get jobs
 2. Get the logs of the job just created
-    - k logs node-v6gn8
+    - k logs job/node
 3. Output the yaml file for the Job with the image busybox named busybox which echos “Hello I am from job”
 - k create job busybox --image=busybox -n ch2p01 $do -- echo 'Hello I am from job' 
 ```
@@ -34,7 +34,7 @@ status: {}
     - k create job busybox --image=busybox -n ch2p01 $do -- echo 'Hello I am from job' > hello-job.yaml
     - k apply -f hello-job.yaml
 5. Verify the job and the associated pod is created and check the logs as well
-    - k logs busybox-zpxln
+    - k logs job/busybox
 6. Delete the job we just created
     - k delete -f hello-job.yaml 
 7. Create the same job and make it run 3 times one after one
@@ -52,6 +52,7 @@ status: {}
 11. Create a Cronjob with busybox image that run every minute and each job prints date and `hello from kubernetes cluster` message 
     - k create cj busybox --image=busybox --schedule="*/1 * * * *" $do -- sh -c "date;echo 'hello from kubernetes cluster'" > cron-1.yml
 12. Verify that CronJob creating a separate job and pods for every minute to run and verify the logs of the pod
+    - k get jobs -w `wait for 3-4 minutes`
     - k get pods -w `wait for 3-4 minutes`
     - k logs busybox-27792785-wdbql
 13. Delete the CronJob and verify all the associated jobs and pods are also deleted.

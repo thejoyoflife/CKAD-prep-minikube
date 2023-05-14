@@ -16,10 +16,10 @@ spec:
   dnsPolicy: ClusterFirst
   restartPolicy: Always
   volumes:
-    - name: vol
-      configMap:
-        name: cfgfromfile
-        items:
-        - key: indoor
-          path: indoor
+  - name: vol
+    configMap:
+      name: cfgfromfile
+      items:
+      - key: indoor
+        path: indoor
 status: {}

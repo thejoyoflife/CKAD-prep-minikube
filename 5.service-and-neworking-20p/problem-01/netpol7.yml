@@ -17,11 +17,11 @@ spec:
           namespaceSelector:
             matchLabels:
               kubernetes.io/metadata.name: ch5p01-animals
-    - from:
         - podSelector:
             matchLabels:
               tag: mango 
           namespaceSelector:
             matchLabels:
               kubernetes.io/metadata.name: ch5p01-fruits
+        
       
