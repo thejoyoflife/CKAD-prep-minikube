@@ -1,0 +1,7 @@
+- k create deploy compute --image byrnedo/alpine-curl --replicas 3 -- sleep inifinity
+- k create svc externalname webapi --external-name www.google.com
+- k exec deploy/compute -- curl -I -H 'Host: www.google.com' webapi `it should return success - 200 status code`.
+- k create deploy nginx --image nginx --port 80
+- k get svc webapi -o yaml > webapi.yaml
+- Change webapi service: 1) Change type from "ExternalName" to "ClusterIP". 2) Remove `externalName` field. 3) Add `selector` field that matches `app: nginx` pods. 4) Add `ports` section to expose a cluster port 80, and forward the request to 80 port (of nginx pods) as well.
+- k apply -f webapi.yaml

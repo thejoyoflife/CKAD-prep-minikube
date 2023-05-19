@@ -1,0 +1,36 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  creationTimestamp: null
+  name: mycj
+spec:
+  concurrencyPolicy: Allow # Forbid, Replace
+  successfulJobsHistoryLimit: 4
+  jobTemplate:
+    metadata:
+      creationTimestamp: null
+      name: mycj
+    spec:
+      parallelism: 2
+      template:
+        metadata:
+          creationTimestamp: null
+        spec:
+          containers:
+          - image: busybox
+            name: mycj
+            command:
+            - sh
+            - -c
+            - hostname >> /tmp/vol/storage
+            resources: {}
+            volumeMounts:
+            - name: vol1
+              mountPath: /tmp/vol
+          restartPolicy: OnFailure
+          volumes:
+          - name: vol1
+            persistentVolumeClaim:
+              claimName: mypvc
+  schedule: '*/1 * * * *'
+status: {}

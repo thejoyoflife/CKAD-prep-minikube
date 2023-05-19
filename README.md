@@ -3,8 +3,8 @@ CKAD is comparatively an expensive exam and it requires hands-on problem solving
 
 The content I used to prepare for the CKAD exam using minikube(`minikube version`).
 ```
-minikube version: v1.26.1
-commit: 62e108c3dfdec8029a890ad6d8ef96b6461426dc
+minikube version: v1.30.1
+commit: 08896fd1dc362c097c925146c4a0d0dac715ace0
 ```
 
 ## Syllabus
@@ -96,9 +96,10 @@ tmp() { k run tmp --restart=Never --rm --stdin -it --image $1 -- sh; }
     - setns test
     - getns `verify it returns test`
     - setns default
-- Here is how you can setup the minikube(assuming you have already installed minikube,docker etc). 
+- Here is how you can setup the minikube. 
     - minikube delete --all
-    - minikube start --nodes 2 --network-plugin=cni --cni calico
+    - minikube start --nodes 2 --cni "calico" --container-runtime "cri-o" --embed-certs true
+        - `embed-certs` is a convenient option that will enable `kubectl` from a Windows WSL2 distribution to access the minikube cluster smoothly, otherwise issues can occur because of hard-coded paths to the certificate files are embedded inside of the KUBECONFIG file (~/.kube/.config). This option essentially emebeds the certificates directly into the KUBECONFIG file.
         - https://projectcalico.docs.tigera.io/getting-started/kubernetes/minikube
         - make sure they are in running state and there is no abnormality in restart count , run command `kubectl get pods -l k8s-app=calico-node -o wide -A -w`
     - minikube addons enable metrics-server
@@ -108,7 +109,8 @@ tmp() { k run tmp --restart=Never --rm --stdin -it --image $1 -- sh; }
     - minikube addons enable ingress-dns
     - minikube tunnel 
         - keep this running in the terminal.
-
+    - For Windows, to access minikube nodes from WSL2 distribution, we need to enable IPv4 packet forwarding. Run the below command fron powershell:
+        - `Get-NetIPInterface | where {$_.InterfaceAlias -eq 'vEthernet (WSL)' -or $_.InterfaceAlias -eq 'vEthernet (Default Switch)'} | Set-NetIPInterface -Forwarding Enabled`
 # Tips:
 - In doubt use -h flag while using kubectl
 - https://kubernetes.io/docs/reference/kubectl/cheatsheet/ - use the kn function to work with namespaces during exam.

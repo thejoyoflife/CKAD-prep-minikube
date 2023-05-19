@@ -1,0 +1,6 @@
+- k run pod1 --image bash -- bash -c "hostname > /tmp/hostname && sleep 1d"
+- k get pod pod1 -o yaml > pod1.yaml `add the label "my-label: test" in the pod1.yaml file`
+- `alternate:` k label pod pod1 my-label=test
+- k replace -f pod1.yaml --force --grace-period=0
+- k get pods -l my-label
+- k exec pod1 -- cat /tmp/hostname

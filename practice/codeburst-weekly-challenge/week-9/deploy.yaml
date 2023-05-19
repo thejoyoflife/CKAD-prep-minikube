@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "1"
+  creationTimestamp: "2023-05-15T02:44:59Z"
+  generation: 1
+  labels:
+    run: nginx
+  name: nginx
+  namespace: default
+  resourceVersion: "310693"
+  uid: e3b08d3d-0082-4cfb-b7d8-bb819a860d32
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      run: nginx
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        run: nginx
+    spec:
+      containers:
+      - name: sidecar
+        image: bash
+        command: ["tail", "-f", "/tmp/logs/access.log"]
+        volumeMounts:
+        - name: logs
+          mountPath: /tmp/logs
+      - image: nginx
+        imagePullPolicy: Always
+        name: nginx
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /var/log/nginx
+          name: logs
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - emptyDir: {}
+        name: logs
+status:
+  availableReplicas: 1
+  conditions:
+  - lastTransitionTime: "2023-05-15T02:45:03Z"
+    lastUpdateTime: "2023-05-15T02:45:03Z"
+    message: Deployment has minimum availability.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: Available
+  - lastTransitionTime: "2023-05-15T02:44:59Z"
+    lastUpdateTime: "2023-05-15T02:45:03Z"
+    message: ReplicaSet "nginx-847dbd448f" has successfully progressed.
+    reason: NewReplicaSetAvailable
+    status: "True"
+    type: Progressing
+  observedGeneration: 1
+  readyReplicas: 1
+  replicas: 1
+  updatedReplicas: 1

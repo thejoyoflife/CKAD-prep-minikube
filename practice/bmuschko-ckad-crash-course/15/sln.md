@@ -1,0 +1,11 @@
+- k create svc clusterip myapp --tcp 80:80
+- k get svc myapp -o wide => Note down the service cluster ip
+- k create deploy myapp --image nginx --port 80
+- k scale deploy myapp --replicas 2
+- tmp busybox
+    * wget -qO- <myapp_svc_cluster_ip> -T 2
+- k edit svc myapp => Change the type from "ClusterIP" to "NodePort", and save the changes.
+- k get svc -o wide => Note down the node port value
+- wget -qO- <node_ip>:<node_port>
+- k run nginx --image nginx --restart Never --image-pull-policy IfNotPresent --port 80 --expose
+- When the service needs to be accessed from Internet, we would use LoadBalancer service type.    

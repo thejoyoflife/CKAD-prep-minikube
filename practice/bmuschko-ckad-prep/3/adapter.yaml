@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: adapter
+spec:
+  terminationGracePeriodSeconds: 2
+  containers:
+  - name: app
+    image: busybox
+    imagePullPolicy: IfNotPresent
+    command: ["sh", "-c"]
+    args:
+    - while true; do echo "$(date) | $(du -sh ~)" >> /var/logs/diskspace.txt; sleep 5; done;
+    volumeMounts:
+    - name: log
+      mountPath: /var/logs
+  - name: transformer
+    image: busybox
+    imagePullPolicy: IfNotPresent
+    command: ["sh", "-c"]    
+    args:
+    - sleep 20; while true; do while read LINE; 
+      do echo $LINE | cut -d"|" -f2 >> $(date +%Y-%m-%d-%H-%M-%S)-transformed.txt; done
+      < /var/logs/diskspace.txt; sleep 20; done;
+    volumeMounts:
+    - name: log
+      mountPath: /var/logs  
+  volumes:
+  - name: log
+    emptyDir: {}

@@ -1,0 +1,107 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    cni.projectcalico.org/containerID: 832140b86dc7bc92c83e22d2d0c759e700f4d1f4e403d3870f77a1492e639b71
+    cni.projectcalico.org/podIP: 10.244.205.211/32
+    cni.projectcalico.org/podIPs: 10.244.205.211/32
+  creationTimestamp: "2023-05-14T20:19:55Z"
+  labels:
+    run: pod1
+    my-label: test  
+  name: pod1
+  namespace: default
+  resourceVersion: "280973"
+  uid: 01b7ca93-1181-4e46-b8af-da51beab9255
+spec:
+  containers:
+  - args:
+    - bash
+    - -c
+    - hostname > /tmp/hostname && sleep 1d
+    image: bash
+    imagePullPolicy: IfNotPresent
+    name: pod1
+    resources: {}
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-2wtbt
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  nodeName: minikube-m02
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  restartPolicy: Never
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  volumes:
+  - name: kube-api-access-2wtbt
+    projected:
+      defaultMode: 420
+      sources:
+      - serviceAccountToken:
+          expirationSeconds: 3607
+          path: token
+      - configMap:
+          items:
+          - key: ca.crt
+            path: ca.crt
+          name: kube-root-ca.crt
+      - downwardAPI:
+          items:
+          - fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+            path: namespace
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2023-05-14T20:19:56Z"
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2023-05-14T20:19:57Z"
+    status: "True"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2023-05-14T20:19:57Z"
+    status: "True"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2023-05-14T20:19:55Z"
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - containerID: docker://42e21ab1beb744fd7d20efe283cab06c164ea282e3bdcb8b2e218a436a4ba510
+    image: bash:latest
+    imageID: docker-pullable://bash@sha256:d6f71002f8b3cb7660d5bec2436a850564e79673c43be75f31908c250f808458
+    lastState: {}
+    name: pod1
+    ready: true
+    restartCount: 0
+    started: true
+    state:
+      running:
+        startedAt: "2023-05-14T20:19:57Z"
+  hostIP: 172.21.233.77
+  phase: Running
+  podIP: 10.244.205.211
+  podIPs:
+  - ip: 10.244.205.211
+  qosClass: BestEffort
+  startTime: "2023-05-14T20:19:56Z"

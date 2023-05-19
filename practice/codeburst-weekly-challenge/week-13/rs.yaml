@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: rs1
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      id: pod-calc
+  template:
+    metadata:
+      labels:
+        id: pod-calc
+    spec: 
+      terminationGracePeriodSeconds: 2
+      containers:
+      - command:
+        - sh
+        - -c
+        - echo "important calculation"; sleep 1d
+        image: nginx
+        name: pod-calc

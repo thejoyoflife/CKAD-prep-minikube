@@ -1,0 +1,3 @@
+  Warning  Failed     99s (x4 over 3m12s)   kubelet            Failed to pull image "nginx:2.3.5": rpc error: code = Unknown desc = Error response from daemon: manifest for nginx:2.3.5 not found: manifest unknown: manifest unknown
+  Warning  Failed     99s (x4 over 3m12s)   kubelet            Error: ErrImagePull
+  Warning  Failed     84s (x6 over 3m12s)   kubelet            Error: ImagePullBackOff

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: app
+spec:
+  terminationGracePeriodSeconds: 2
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent
+    volumeMounts:
+    - name: vol1
+      mountPath: /var/app/config
+  volumes:
+  - name: vol1
+    persistentVolumeClaim:
+      claimName: pvc    

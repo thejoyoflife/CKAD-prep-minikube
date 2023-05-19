@@ -1,0 +1,10 @@
+- k get pods -n ingress-nginx => Verify the ingress controller is in Running state.
+- k create deploy mydep --image bmuschko/nodejs-hello-world:1.0.0
+- k expose deploy mydep --type NodePort --port 3000 --target-port 3000
+- k get svc mydep -o wide => Note down the NodePort value
+- k get nodes -o wide => Note down a node ip
+- curl <node_ip>:<node_port> => should show the message "Hello World".
+- k create ing mying --rule=hello-world.exposed/=mydep:3000
+- k get ing
+- sudo vi /etc/hosts => Add `<node_ip> hello-world.exposed`.
+- curl hello-world.exposed => should show the message "Hello World".

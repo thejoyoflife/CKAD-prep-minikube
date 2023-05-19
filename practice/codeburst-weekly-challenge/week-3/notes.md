@@ -1,0 +1,4 @@
+- A PV with a `Retain` reclaim policy (`persistentVolumeReclaimPolicy`) can not usually be reassinged to another PVC even after the previously attached one is deleted - the PV still hold onto the previous claim reference. In this case, we can nullify the claim reference of the PV in order for it to become available and thus, be reused. The following patch command can be used to make an used PV available again:
+```k patch pv <pv_name> -p '{"spec": {"claimRef": null}}'```
+- A PV with "`Delete`" `persistentVolumeReclaimPolicy` will automatically be deleted once the attached PVC is also deleted.
+- Even though a PVC is automatically attached to a PV based on its criteria, it can also be bound to a specific PV by using the `volumeName` and/or `selector` fields of the PVC spec. If both are specified, and matches to different PVs, the one mentioned in the `volumeName` field will take precedence.

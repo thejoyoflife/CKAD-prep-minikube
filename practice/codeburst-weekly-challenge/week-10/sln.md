@@ -1,0 +1,1 @@
+- Even if a pod is created and tampered with the labels used by an existing deployment/replicaset, the pod would be immediately deleted after being assigned to a node. In this case, the replicaset will kick in and find that the number of replicas is increased, and therefore, the extra pod will be deleted right away.

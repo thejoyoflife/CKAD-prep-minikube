@@ -1,0 +1,11 @@
+- k create ns one
+- kn one `kn is bash function that changes namespace`
+- k create deploy nginx --image nginx:1.14.2 --replicas 15
+- k get pods -l app=nginx --field-selector=status.phase!=Running `this should show no resources when each one of the 15 pods is successfully run`
+- k set image deploy/nginx nginx=nginx:1.15.10
+- To confirm all the pods are running the updated image:
+``` k get pods -l app=nginx -o custom-columns='NAME:metadata.name,IMAGE:spec.containers[0].image'```
+- k rollout status deploy/nginx --timeout 5s
+- There are errors in the deployments as shown in the output of `k get pods -l app=nginx`.
+- k rollout undo deploy/nginx
+- By executing the previous command, it can be confirmed that all the pods are running 1.15.10 version of nginx image i.e. the deployment has been successfully rolled back.

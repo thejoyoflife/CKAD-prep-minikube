@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hello
+spec:
+  terminationGracePeriodSeconds: 2
+  containers:
+  - name: hello
+    image: bmuschko/nodejs-hello-world:1.0.0
+    ports:
+    - name: nodejs-port
+      containerPort: 3000
+    readinessProbe:
+      initialDelaySeconds: 2
+      httpGet:
+        path: /
+        port: nodejs-port
+    livenessProbe:
+      initialDelaySeconds: 5
+      periodSeconds: 8
+      httpGet:
+        path: /
+        port: nodejs-port      
