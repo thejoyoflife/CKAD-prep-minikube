@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: nginx
+  name: nginx
+spec:
+  containers:
+  - image: nginx
+    imagePullPolicy: IfNotPresent
+    name: nginx
+    ports:
+    - name: web
+      containerPort: 80
+    resources: {}
+    livenessProbe:
+      initialDelaySeconds: 5
+      periodSeconds: 5
+      exec:
+        command:
+        - ls
+    readinessProbe:
+      httpGet:
+        path: /
+        port: 80    
+  dnsPolicy: ClusterFirst
+  restartPolicy: Never
+status: {}

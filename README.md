@@ -111,6 +111,8 @@ tmp() { k run tmp --restart=Never --rm --stdin -it --image $1 -- sh; }
         - keep this running in the terminal.
     - For Windows, to access minikube nodes from WSL2 distribution, we need to enable IPv4 packet forwarding. Run the below command fron powershell:
         - `Get-NetIPInterface | where {$_.InterfaceAlias -eq 'vEthernet (WSL)' -or $_.InterfaceAlias -eq 'vEthernet (Default Switch)'} | Set-NetIPInterface -Forwarding Enabled`
+    - To access minikube nodes over ssh:
+        - `minikube ssh -n <node_name> --native-ssh=false`    
 # Tips:
 - In doubt use -h flag while using kubectl
 - https://kubernetes.io/docs/reference/kubectl/cheatsheet/ - use the kn function to work with namespaces during exam.
