@@ -7,6 +7,6 @@
 - k create sa api-call
 - Change the pod spec to include the `api-call` service account as a value of the field `serviceAccountName` - note that `serviceAccount` field is deprecated, so should not be used.
 - k create clusterrole list-services --verb=list --resource=services
-- k create clusterrolebiding -list-services --clusterrole=list-services --serviceaccount=t23:api-call
+- k create clusterrolebinding list-services --clusterrole=list-services --serviceaccount=t23:api-call
 - k replace -f service-list.yaml --force
 - k logs service-list -f => now, the `curl` request should be successful.

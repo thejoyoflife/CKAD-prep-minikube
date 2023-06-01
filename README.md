@@ -76,26 +76,16 @@ filetype plugin indent on
 set autoindent smartindent
 set expandtab
 set tabstop=2 softtabstop=2 shiftwidth=2
-set number ruler
+set number
+set hidden
 ```
 - Setting up shortcuts, this is helpful in case if you close the terminal accidentally. Spaces are very important, treat them with caution when typing. The `alias kn` can be found here `https://kubernetes.io/docs/reference/kubectl/cheatsheet/`. Search with keyword `cheat` in the k8s official doc to land on this page.
 ```
 alias k=kubectl
 export do="--dry-run=client -o yaml"
-alias kn='f() { [ "$1" ] && kubectl config set-context --current --namespace $1 || kubectl config view --minify | grep namespace | cut -d" " -f6 ; } ; f'
+alias kn='f() { [ "$1" ] && kubectl config set-context --current --namespace $1 || kubectl config view --minify | grep -i namespace | cut -d" " -f6 ; } ; f'
 tmp() { k run tmp --restart=Never --rm --stdin -it --image $1 -- sh; }
 ```
-- Here is what I used to do everyday -  
-    - rm -rf ~/.vimrc fn.sh
-    - vi ~/.vimrc
-    - practice typing the vim configs.
-    - vi ~/fn.sh
-    - practice typing the ~/fn.sh commands
-    - source ~/fn.sh
-    - getns
-    - setns test
-    - getns `verify it returns test`
-    - setns default
 - Here is how you can setup the minikube. 
     - minikube delete --all
     - minikube start --nodes 2 --cni "calico" --container-runtime "cri-o" --embed-certs true
