@@ -3,7 +3,7 @@
 ### Topics:
 - vim
 - Jsonpath, JQ, Go-Template
-- OS Commands/Tools (ls, cat, echo, sudo, chmod, chown, tar, sed, xargs, bash loops/variables, curl, wget, nc)
+- OS Commands/Tools (ls, cat, echo, sudo, chmod, chown, grep, awk, tar, sed, xargs, bash loops/variables, curl, wget, nc)
 - Helm CLI
 
 ### Some specific points:

@@ -83,26 +83,34 @@ set hidden
 ```
 alias k=kubectl
 export do="--dry-run=client -o yaml"
-alias kn='f() { [ "$1" ] && kubectl config set-context --current --namespace $1 || kubectl config view --minify | grep -i namespace | cut -d" " -f6 ; } ; f'
-tmp() { k run tmp --restart=Never --rm --stdin -it --image $1 -- sh; }
+alias kn='f() { [[ $1 ]] && kubectl config set-context --current --namespace "$1" || kubectl config view --minify | grep -i namespace | cut -d" " -f6 ; } ; f'
+tmp() {
+    local podname="tmp" imagename="busybox";
+    if [[ $# = 2 ]]; then
+        podname="$1"; imagename="$2";
+    elif [[ $# = 1 ]]; then
+        imagename="$1";
+    fi
+    k run "$podname" --image "$imagename" --restart Never --image-pull-policy IfNotPresent --rm -it -- sh;    
+}
 ```
 - Here is how you can setup the minikube. 
-    - minikube delete --all
-    - minikube start --nodes 2 --cni "calico" --container-runtime "cri-o" --embed-certs true
-        - `embed-certs` is a convenient option that will enable `kubectl` from a Windows WSL2 distribution to access the minikube cluster smoothly, otherwise issues can occur because of hard-coded paths to the certificate files are embedded inside of the KUBECONFIG file (~/.kube/.config). This option essentially emebeds the certificates directly into the KUBECONFIG file.
+    - `minikube delete --all`
+    - `minikube start --nodes 2 --cni "calico" --container-runtime "cri-o" --embed-certs true`
+        - `embed-certs` is a convenient option that will enable `kubectl` from a Windows WSL2 distribution to access the Windows Minikube cluster in a smooth manner, otherwise issues can occur because of hard-coded paths to the certificate files are being embedded inside of the KUBECONFIG file (~/.kube/.config). This option essentially emebeds the certificates directly into the KUBECONFIG file.
         - https://projectcalico.docs.tigera.io/getting-started/kubernetes/minikube
         - make sure they are in running state and there is no abnormality in restart count , run command `kubectl get pods -l k8s-app=calico-node -o wide -A -w`
     - minikube addons enable metrics-server
         - Verify that 'metrics-server' addon is enabled `minikube addons list | grep metrics-server`
         -  Verify that 'metrics-server' pod is running `kubectl get pods --namespace kube-system | grep metrics-server `
-    - minikube addons enable ingress
-    - minikube addons enable ingress-dns
-    - minikube tunnel 
+    - `minikube addons enable ingress`
+    - `minikube addons enable ingress-dns`
+    - `minikube tunnel` - this essentially allows services (clusterip,nodeport,loadbalancer) to be accessible through their ClusterIPs from the host machine. 
         - keep this running in the terminal.
     - For Windows, to access minikube nodes from WSL2 distribution, we need to enable IPv4 packet forwarding. Run the below command fron powershell:
         - `Get-NetIPInterface | where {$_.InterfaceAlias -eq 'vEthernet (WSL)' -or $_.InterfaceAlias -eq 'vEthernet (Default Switch)'} | Set-NetIPInterface -Forwarding Enabled`
-    - To access minikube nodes over ssh:
-        - `minikube ssh -n <node_name> --native-ssh=false`    
+    - To access minikube nodes over ssh from Windows powershell:
+        - `minikube ssh -n <node_name> --native-ssh=false` => without `native-ssh=false` option, the terminal doesn't work smoothly (e.g. shell command history can not be traversed via up/down arrow key).
 # Tips:
 - In doubt use -h flag while using kubectl
 - https://kubernetes.io/docs/reference/kubectl/cheatsheet/ - use the kn function to work with namespaces during exam.
