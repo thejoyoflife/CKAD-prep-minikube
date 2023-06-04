@@ -3,7 +3,7 @@
 ### Topics:
 - vim
 - Jsonpath, JQ, Go-Template
-- OS Commands/Tools (ls, ps, cat, echo, sudo, chmod, chown, grep, awk, tar, watch, cut, column, sed, xargs, head, tail, less, bash loops/variables, curl, wget, nc, nslookup, netstat)
+- OS Commands/Tools (ls, ps, cat, echo, sudo, chmod, chown, grep, awk, tar, tr, watch, cut, column, sed, xargs, head, tail, less, bash loops/variables, curl, wget, nc, nslookup, netstat)
 - Helm CLI
 
 ### Some specific points:
@@ -42,4 +42,6 @@
     `drwxr-xr-x    2 root     root            40 May  20 14:47 /tmp/pvshare`
 - The permission of the mounted directory can be manually changed from an `init container` so that the general containers do not interfere (e.g. delete files created by one container from another container) with each other. `chmod og-w -R /tmp/share` can be used from a busybox init container to change the permission as required. For, persistent volumes, the permission is already set like this automatically by the system.
 - `securityContext -> fsGroup` in the pod spec can be used to change the "Group Ownership" of the mounted volume and also to set the `setgid` bit in the directory permission.
+- Verifying access permission for a service account can be done like this:
+   * `kubectl auth can-i get pods -n dev --as=system:serviceaccount:test:myaccount` => verifies whether `myaccount` service account in `test` namespace can get pods in the `dev` namespace or not. NOTE: `system:serviceaccount` string must be used for service account verification.
    

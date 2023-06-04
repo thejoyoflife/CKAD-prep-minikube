@@ -6,7 +6,7 @@
 - `k logs service-list -f` => the `curl` request should be timed out as the default service account (the sa the pods are run under, by default) doesn't have permission to access/list the kubernetes objects from API server.
 - `k create sa api-call`
 - Change the pod spec to include the `api-call` service account as a value of the field `serviceAccountName` - note that `serviceAccount` field is deprecated, so should not be used.
-- Since the pod requires access to resources in another namespace (cross namespace) via the Kubernetes API, we need to create `ClusterRole` and `ClusterRoleBinding` objects.
+- Since the pod is running in one namespace and requires access to resources of another namespace (cross namespace) via the Kubernetes API, we need to create `ClusterRole` and `ClusterRoleBinding` objects. Linking a simple `RoleBinding` object in `t23` namespace with a `ClusterRole` won't help here, becuase a `RoleBinding` object essentially gives access to resources where it actually resides in even though it is linked with a `ClusterRole`. 
 - `k create clusterrole list-services --verb=list --resource=services`
 - `k create clusterrolebinding list-services --clusterrole=list-services --serviceaccount=t23:api-call`
 - `k replace -f service-list.yaml --force`
