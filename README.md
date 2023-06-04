@@ -1,5 +1,5 @@
 # CKAD-minikube
-CKAD is comparatively an expensive exam and it requires hands-on problem solving very fast within a VM environment, and hence, solving practice problems are key to success in this exam. 
+CKAD is comparatively an expensive exam and it requires hands-on problem solving very fast within a `Remote Desktop` environment, and hence, solving practice problems are key to success in this exam. 
 
 The content I used to prepare for the CKAD exam using minikube(`minikube version`).
 ```
@@ -8,38 +8,7 @@ commit: 08896fd1dc362c097c925146c4a0d0dac715ace0
 ```
 
 ## Syllabus
-#### Application Design and Build 20%
-
-- Define, build and modify container images
-- Understand Jobs and CronJobs
-- Understand multi-container Pod design patterns (e.g. sidecar, init and others)
-- Utilize persistent and ephemeral volumes
-
-#### Application Deployment 20%
-- Use Kubernetes primitives to implement common deployment strategies (e.g. blue/green or canary)
-- Understand Deployments and how to perform rolling updates
-- Use the Helm package manager to deploy existing packages 
-
-#### Application Observability and Maintenance 15%
-- Understand API deprecations
-- Implement probes and health checks
-- Use provided tools to monitor Kubernetes applications
-- Utilize container logs
-- Debugging in Kubernetes
-
-#### Application Environment, Configuration and Security 25%
-- Discover and use resources that extend Kubernetes (CRD)
-- Understand authentication, authorization and admission control
-- Understanding and defining resource requirements, limits and quotas
-- Understand ConfigMaps
-- Create & consume Secrets
-- Understand ServiceAccounts
-- Understand SecurityContexts
-
-##### Services and Networking 20%
-- Demonstrate basic understanding of NetworkPolicies
-- Provide and troubleshoot access to applications via services
-- Use Ingress rules to expose applications
+[CKAD Syllabus](https://training.linuxfoundation.org/certification/certified-kubernetes-application-developer-ckad/)
 
 
 # Practice Material:
@@ -80,10 +49,16 @@ set number
 set hidden
 ```
 - Setting up shortcuts, this is helpful in case if you close the terminal accidentally. Spaces are very important, treat them with caution when typing. The `alias kn` can be found here `https://kubernetes.io/docs/reference/kubectl/cheatsheet/`. Search with keyword `cheat` in the k8s official doc to land on this page.
-```
+```bash
+# Huge timesaver
 alias k=kubectl
+# Output of a command in yaml format
 export do="--dry-run=client -o yaml"
+# To change namespace (or, view the current one) within the current context
 alias kn='f() { [[ $1 ]] && kubectl config set-context --current --namespace "$1" || kubectl config view --minify | grep -i namespace | cut -d" " -f6 ; } ; f'
+# To change the current context
+alias kx='f() { [[ $1 ]] && k config use-context "$1" || k config current-context; } ;f'
+# To run a temporary pod using a default/given image, and land into the container's `sh` shell
 tmp() {
     local podname="tmp" imagename="busybox";
     if [[ $# = 2 ]]; then
@@ -100,7 +75,7 @@ tmp() {
         - `embed-certs` is a convenient option that will enable `kubectl` from a Windows WSL2 distribution to access the Windows Minikube cluster in a smooth manner, otherwise issues can occur because of hard-coded paths to the certificate files are being embedded inside of the KUBECONFIG file (~/.kube/.config). This option essentially emebeds the certificates directly into the KUBECONFIG file.
         - https://projectcalico.docs.tigera.io/getting-started/kubernetes/minikube
         - make sure they are in running state and there is no abnormality in restart count , run command `kubectl get pods -l k8s-app=calico-node -o wide -A -w`
-    - minikube addons enable metrics-server
+    - `minikube addons enable metrics-server`
         - Verify that 'metrics-server' addon is enabled `minikube addons list | grep metrics-server`
         -  Verify that 'metrics-server' pod is running `kubectl get pods --namespace kube-system | grep metrics-server `
     - `minikube addons enable ingress`
@@ -113,4 +88,4 @@ tmp() {
         - `minikube ssh -n <node_name> --native-ssh=false` => without `native-ssh=false` option, the terminal doesn't work smoothly (e.g. shell command history can not be traversed via up/down arrow key).
 # Tips:
 - In doubt use -h flag while using kubectl
-- https://kubernetes.io/docs/reference/kubectl/cheatsheet/ - use the kn function to work with namespaces during exam.
+- https://kubernetes.io/docs/reference/kubectl/cheatsheet/ - use the `kn` alias to work with namespaces during exam.
