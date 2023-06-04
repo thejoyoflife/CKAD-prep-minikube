@@ -3,14 +3,16 @@
 ### Topics:
 - vim
 - Jsonpath, JQ, Go-Template
-- OS Commands/Tools (ls, cat, echo, sudo, chmod, chown, grep, awk, tar, sed, xargs, bash loops/variables, curl, wget, nc)
+- OS Commands/Tools (ls, ps, cat, echo, sudo, chmod, chown, grep, awk, tar, watch, cut, column, sed, xargs, head, tail, less, bash loops/variables, curl, wget, nc, nslookup, netstat)
 - Helm CLI
 
 ### Some specific points:
+- `pod.spec.containers.securityContext.readOnlyRootFilesystem` can be set to `true` to make a linux container's root filesystem "read-only" - the processes in the container can not write anyting to the root filesystem.
+- A deployment can be annotated with `kubernetes.io/change-cause:<some_string>` to get it shown under the "CHANGE-CAUSE" column of its deployment history (`k rollout history`).
 - Create an nginx pod that uses 'myuser' as a service account
-   * `k run nginx --image nginx --restart Never --image-pull-policy IfNotPresent $do | k set sa -f - myuser --local=true -o yaml | k apply -f -`
+   * `k run nginx --image nginx --restart Never --image-pull-policy IfNotPresent $do | k set sa -f - myuser --local -o yaml | k apply -f -`
 - Create an nginx pod with requests cpu=100m,memory=256Mi and limits cpu=200m,memory=512Mi
-   * `k run nginx --image nginx --restart Never --image-pull-policy IfNotPresent $do | k set resources -f - --requests=cpu=100m,memory=256Mi --limits=cpu=200m,memory=512Mi --local=true -o yaml | k apply -f -`
+   * `k run nginx --image nginx --restart Never --image-pull-policy IfNotPresent $do | k set resources -f - --requests=cpu=100m,memory=256Mi --limits=cpu=200m,memory=512Mi --local -o yaml | k apply -f -`
 - Copy `/etc/passwd` file from a busybox pod to local folder.
    * `k exec busybox -- tar -cvf -C /etc passwd | tar -xvf -`
 - Lots of pods are running in qa,alan,test,production namespaces. All of these pods are configured with liveness probe. Please list all pods whose liveness probe have failed in the format of <namespace>/<pod name> per line.
@@ -31,5 +33,13 @@
    * `k wait --for=condition=complete jobs/pi --timout 10s`
    * `k wait --for=jsonpath='{.status.phase}'=Running pods -l app=nginx --timeout 15s`
 - "CronJob" has `startingDeadlineSeconds`, whereas "Job" has `activeDeadlineSeconds` - one is used to set the time limit (in seconds) to start the CronJob, the other one for the job (which is part of the "CronJob") to finish.   
-
+- Copy an existing pod
+   * `k debug <existing_pod_name> --copy-to <new-pod-name> --set-image=<existing_cont_name>=<same_image>` => `--set-image` needs to be given even though it seems to be redundant.
+- Ephemeral volumes are, by default, mounted in the container filesystems with full permissions for everyones and with owner/group as root. Persistent volumes are also mounted with owner/group as root, but the write permission on the directory is prohibited for group and other users. For both type of volumes, no write permissions are given to group or others for new files/directories created in the mount point (`i.e. -rw-r--r--`).
+    * Ephemeral mountpoint permission would look like this:
+    `drwxrwxrwx    2 root     root          4096 May  20 14:47 /tmp/share`
+    * PV mountpoint permission would look like this:
+    `drwxr-xr-x    2 root     root            40 May  20 14:47 /tmp/pvshare`
+- The permission of the mounted directory can be manually changed from an `init container` so that the general containers do not interfere (e.g. delete files created by one container from another container) with each other. `chmod og-w -R /tmp/share` can be used from a busybox init container to change the permission as required. For, persistent volumes, the permission is already set like this automatically by the system.
+- `securityContext -> fsGroup` in the pod spec can be used to change the "Group Ownership" of the mounted volume and also to set the `setgid` bit in the directory permission.
    

@@ -1,4 +1,5 @@
-- k create secret generic db-credentials --from-literal=db-password=passwd
-- k run backend --image nginx --restart Never --dry-run=client -o yaml > backend.yaml => change the file to include the secret key as an environment variable.
-- k apply -f backend.yaml
-- k exec backend -- env | grep -i db => should show the DB_PASSWORD environment variable with the correct value as specified in the secret.
+- `k create deploy nginx --image nginx $do | k set resources -f - --requests=cpu=0.5,memory=500Mi --limits=memory=500Mi --local=true -o yaml | k apply -f -`
+- Create a HPA object by copying a reference from kubernetes doc. NOTE: `k autoscale` command generates an old HPA object. Also, the command doesn't support "memory" utilization. So, its better to copy from the website.
+- `k apply -f hpa.yaml`
+- A few seconds later, the minikum number of pods of the deployment will be 3 as specified in the HPA object.
+- `k get hpa nginx-hpa`

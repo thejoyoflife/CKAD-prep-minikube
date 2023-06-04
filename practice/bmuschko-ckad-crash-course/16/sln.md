@@ -1,10 +1,7 @@
-- k get pods -n ingress-nginx => Verify the ingress controller is in Running state.
-- k create deploy mydep --image bmuschko/nodejs-hello-world:1.0.0
-- k expose deploy mydep --type NodePort --port 3000 --target-port 3000
-- k get svc mydep -o wide => Note down the NodePort value
-- k get nodes -o wide => Note down a node ip
-- curl <node_ip>:<node_port> => should show the message "Hello World".
-- k create ing mying --rule=hello-world.exposed/=mydep:3000
-- k get ing
-- sudo vi /etc/hosts => Add `<node_ip> hello-world.exposed`.
-- curl hello-world.exposed => should show the message "Hello World".
+- `k apply -f configmap.yaml`
+- `k apply -f deployment.yaml` => there are errors in the file that need to be fixed according to latest version (1.26) of Kubernetes.
+    * Change the `apiVersion` from `apps/v1beta2` to `apps/v1`.
+    * `selector` is a mandatory field for a deployment. Add the field and also make sure the pod template labels match with this `selector` labels.
+    * Save the changes in a new `deployment-new.yaml` file.
+- `k apply -f deployment-new.yaml` => this should succeed now.    
+    

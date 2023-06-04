@@ -1,11 +1,10 @@
-- k create svc clusterip myapp --tcp 80:80
-- k get svc myapp -o wide => Note down the service cluster ip
-- k create deploy myapp --image nginx --port 80
-- k scale deploy myapp --replicas 2
-- tmp busybox
-    * wget -qO- <myapp_svc_cluster_ip> -T 2
-- k edit svc myapp => Change the type from "ClusterIP" to "NodePort", and save the changes.
-- k get svc -o wide => Note down the node port value
-- wget -qO- <node_ip>:<node_port>
-- k run nginx --image nginx --restart Never --image-pull-policy IfNotPresent --port 80 --expose
-- When the service needs to be accessed from Internet, we would use LoadBalancer service type.    
+- `helm create web-app`
+- Delete all the files from the `web-app` chart directory that are not required.
+- Make changes to the chart directory as per the requirement.
+- `helm package web-app/` => this creates the chart archive file `web-app-2.5.4.tgz`.
+- `k create ns app-stack`
+- `kn app-stack`
+- `helm install hello-world web-app-2.5.4.tgz --set service_port=9090`
+- `helm ls`
+- `k get all -o wide -l 'app.kubernetes.io/managed-by=Helm'` => `H`(elm) in capital.
+- `helm uninstall hello-world`

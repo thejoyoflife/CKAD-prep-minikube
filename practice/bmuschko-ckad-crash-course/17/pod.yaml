@@ -7,6 +7,7 @@ spec:
   containers:
   - name: hello
     image: bmuschko/nodejs-hello-world:1.0.0
+    imagePullPolicy: IfNotPresent
     ports:
     - name: nodejs-port
       containerPort: 3000
@@ -20,4 +21,4 @@ spec:
       periodSeconds: 8
       httpGet:
         path: /
-        port: nodejs-port      
+        port: nodejs-port    

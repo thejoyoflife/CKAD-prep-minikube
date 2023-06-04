@@ -1,0 +1,6 @@
+- `k create deploy web --image bmuschko/nodejs-hello-world:1.0.0 --port 3000`
+- `k expose deploy web --type NodePort` => If `--port` is specified during deployment creation, then we can omit the same in service creation time. This will expose the service at the same port within the cluster.
+- `k get svc -A -o wide` => note down the "nodeport" of both the `web` service and the ingress contorller service; ingress controller should be running as a NodePort service.
+- Check the service is accessible from a minikube node => `curl -sm 2 <node_ip>:<nodeport_of_web_service>` => should show "Hello World" :-) .
+- `k create ing mying --rule=hello-world.exposed/=web:3000`
+- `curl -sm 2 -H 'Host: hello-world.exposed' <node_ip>:<nodeport_of_ingress_service>` => this should show "Hello World" response successfully confirming that the ingress is working fine. FYI: removing the `Host` header from the `curl` request should return `404` response from the ingress controller.

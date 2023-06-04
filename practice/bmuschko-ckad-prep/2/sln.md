@@ -13,7 +13,7 @@
 
 ### #3
 - `k run secured --image nginx --restart Never --image-pull-policy IfNotPresent --dry-run=client -o yaml > secured.yaml` - Change the file to add `securityContext -> fsGroup` field under the pod spec section and mount an emptyDir volume in the container at `/data/app` path.
-- `k exec secured -- ls -ld /data/app` - the permission should show `3000` as the GID, and also `setgid (s)` bit is set for the group permission.
+- `k exec secured -- ls -ld /data/app` - the permission should show `3000` as the GID, and also `setgid (s)` bit is set in the permission bitmap.
 - `k exec secured -it -- sh`
    * `touch /data/app/logs.txt`
    * `ls -l /data/app` - the GID of `logs.txt` file should be `3000`.

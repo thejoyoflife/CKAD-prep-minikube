@@ -1,5 +1,11 @@
-- k create cm db-config --from-env-file=config.txt
-- k get cm db-config -o yaml
-- k run backend --image nginx --restart Never --dry-run=client -o yaml > backend.yaml => change the file to include all the config map keys as individual environment variables into the container.
-- k apply -f backend.yaml
-- k exec backend -- env
+- `k create deploy nginx-blue --image nginx:1.23.0 --replicas 3 --port 80 $do > deploy-blue.yaml`
+- Change the file to include `version=blue` labels in the pod template and the deployment selector.
+- `k apply -f deploy-blue.yaml`
+- `k expose deploy nginx-blue --name nginx`
+- `k run tmp --image alpine/curl --rm --restart Never -it --image-pull-policy IfNotPresent -- curl -sI nginx | grep -i server` => this shows the server version as `1.23.0`.
+- `k create deploy nginx-greeen --image nginx:1.23.4 --replicas 3 --port 80 $do > deploy-green.yaml`
+- Change the file to include `version=green` labels in the pod template and the deployment selector.
+- `k apply -f deploy-green.yaml`
+- `k edit svc nginx` => change the selector label from `version=blue` to `version=green`.
+- `k delete deploy nginx-blue`
+- `k run tmp --image alpine/curl --rm --restart Never -it --image-pull-policy IfNotPresent -- curl -sI nginx | grep -i server` => this shows the server version as `1.23.4`.

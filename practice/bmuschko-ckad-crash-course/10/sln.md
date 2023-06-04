@@ -1,12 +1,13 @@
-- k create ns t23
-- kn t23
-- k run service-list --image alpine/curl:3.14 --restart Never --dry-run=client -o yaml > service-list.yaml
+- `k create ns t23`
+- `kn t23`
+- `k run service-list --image alpine/curl:3.14 --restart Never --dry-run=client -o yaml > service-list.yaml`
 - Change the pod file to include the `curl` request as mentioned. This is a tricky curl request. So be careful.
-- k apply -f service-list.yaml 
-- k logs service-list -f => the `curl` request should be timed out as the default service account (the sa the pods are run under, by default) doesn't have permission to access/list the kubernetes objects from API server.
-- k create sa api-call
+- `k apply -f service-list.yaml`
+- `k logs service-list -f` => the `curl` request should be timed out as the default service account (the sa the pods are run under, by default) doesn't have permission to access/list the kubernetes objects from API server.
+- `k create sa api-call`
 - Change the pod spec to include the `api-call` service account as a value of the field `serviceAccountName` - note that `serviceAccount` field is deprecated, so should not be used.
-- k create clusterrole list-services --verb=list --resource=services
-- k create clusterrolebinding list-services --clusterrole=list-services --serviceaccount=t23:api-call
-- k replace -f service-list.yaml --force
-- k logs service-list -f => now, the `curl` request should be successful.
+- Since the pod requires access to resources in another namespace (cross namespace) via the Kubernetes API, we need to create `ClusterRole` and `ClusterRoleBinding` objects.
+- `k create clusterrole list-services --verb=list --resource=services`
+- `k create clusterrolebinding list-services --clusterrole=list-services --serviceaccount=t23:api-call`
+- `k replace -f service-list.yaml --force`
+- `k logs service-list -f` => now, the `curl` request should be successful.

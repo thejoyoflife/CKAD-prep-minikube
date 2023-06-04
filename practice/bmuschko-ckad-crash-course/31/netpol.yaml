@@ -1,20 +1,19 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: db-netpol
+  name: allow-ingress-from-k1
+  namespace: k2
 spec:
   policyTypes:
   - Ingress
   podSelector:
     matchLabels:
-      app: todo
-      tier: database
+      app: backend
   ingress:
   - from:
-    - podSelector:
+    - namespaceSelector:
         matchLabels:
-          app: todo
-          tier: backend
+          role: consumer
     ports:
-    - port: 3306
+    - port: 80
       protocol: TCP

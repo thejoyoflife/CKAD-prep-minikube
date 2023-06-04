@@ -10,12 +10,12 @@
 
 ### #2
 1. k create ns app-stack
-2. kn app-stack
+2. kn app-stack && k apply -f app-stack.yaml
 3. k get pods -o wide
 4. Open two separate terminals to start the following two debug sessions and keep them open.
-5. k debug pod frontend --image nicolaka/netshoot -c debugger it
+5. k debug pod frontend --image nicolaka/netshoot -c debugger -it
    * nc -zvw 2 <database_pod_ip> 3306 - `this should be successful`
-6. k debug pod backend --image nicolaka/netshoot -c debugger it
+6. k debug pod backend --image nicolaka/netshoot -c debugger -it
    * nc -zvw 2 <database_pod_ip> 3306 - `this should also be successful`
 7. Create the network policy file, and `k apply -f app-stack-network-policy.yaml`.
 8. Perform the `netcat` operations again. This time, #5 operation should be unsuccessful, but #6 should continue to be successful as per the defined network policy. 

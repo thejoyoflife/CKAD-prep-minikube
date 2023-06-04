@@ -1,0 +1,4 @@
+- `k create ns stress-test`
+- `kn stress-test`
+- `k apply -f stress-1.yaml -f stress-2.yaml -f stress-3.yaml`
+- `k top pods --sort-by=cpu` or `k top pods --sort-by=memory` => shows in descending order.

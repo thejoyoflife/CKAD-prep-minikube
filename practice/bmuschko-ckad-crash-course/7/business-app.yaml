@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: business-app  
+spec:
+  volumes:
+  - name: vol1
+    emptyDir: {}
+  initContainers:
+  - name: configurer
+    image: busybox
+    imagePullPolicy: IfNotPresent
+    command:
+    - wget
+    - -qO
+    - /usr/shared/app/config.json 
+    - https://raw.githubusercontent.com/bmuschko/ckad-crash-course/master/exercises/07-init-container/app/config/config.json
+    volumeMounts:
+    - name: vol1
+      mountPath: /usr/shared/app
+  containers:
+  - name: web
+    image: bmuschko/nodejs-read-config:1.0.0
+    imagePullPolicy: IfNotPresent
+    ports:
+    - containerPort: 8080
+    volumeMounts:
+    - name: vol1
+      mountPath: /usr/shared/app
+  terminationGracePeriodSeconds: 2          
+  
