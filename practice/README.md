@@ -161,7 +161,7 @@ This just restarts the `nginx-cont` container of the pod `nginx` with the new im
 
 - `pod.spec.volumes.secret/configMap` vs `pod.spec.containers.envFrom.secretRef/configMapRef` - the `envFrom` contains fields with a `Ref` suffix, whereas in the `volumes` field its not.
 
-- `pod.spec.volumes.configMap.name` vs `pod.spec.volumes.secret.secretName` - the one with `secret` contains `name` with `secret` prefix, whereas for the other its just `name`.
+- `pod.spec.volumes.configMap.name` vs `pod.spec.volumes.secret.secretName` - the one with `secret` contains `name` with `secret` prefix as the name of the field, whereas for the other it just has `name`.
 
 - Listing labels and annotations for pods can be done using:
    * `k label pods -l app=v1 --list`
@@ -180,7 +180,7 @@ This just restarts the `nginx-cont` container of the pod `nginx` with the new im
    ```bash
    k get pods -l 'env,env notin (dev,prod) -L env
    ``` 
-   This ensures that `env` label is present along with satisfying the other condition.
+   This ensures that `env` label is present in the pods along with satisfying the other condition.
    
    * 
    ```bash

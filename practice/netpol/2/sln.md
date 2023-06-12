@@ -1,0 +1,2 @@
+- In the `db-policy`, there is no need for `egress` traffic towards `backend` pod as `backend` pod doesn't allow `ingress` traffic from `db` pod.
+- `frontend` pod has `ingress` and `egress` rules with `auth` pod. But, there is no such corresponding `egress` and `ingress` rules are not defined in `auth` pod.

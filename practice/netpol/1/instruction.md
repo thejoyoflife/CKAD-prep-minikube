@@ -1,0 +1,4 @@
+- Create 3 pods `nginx05`, `redis05`, and `httpd05` with images `nginx`, `redis`, and `httpd` respectively. Attach a sidecar debug container of image `busybox` to each of them. The security team has enforced the application team to limit the communication between unnecessary pods. Ensure that only the following communication is allowed between pods:
+    * Allow: `nginx05` <---> `redis05`, `nginx05` <---> `httpd05`
+    * Deny: `httpd05` <---> `redis05` , `redis05` <---> rest of the world, `nginx05` <---> the rest of the world. Identify a possible information flow in this system. Write the information flow in the format __End-User::Pod1::Pod2::Pod3__.
+    * Make sure the DNS traffic is allowed from each of the pods.

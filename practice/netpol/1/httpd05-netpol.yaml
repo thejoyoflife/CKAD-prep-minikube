@@ -1,0 +1,34 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: httpd05
+spec:
+  policyTypes:
+  - Ingress
+  - Egress
+  podSelector:
+    matchLabels:
+      run: httpd05
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          run: nginx05
+    - ipBlock:
+        cidr: 0.0.0.0/0
+        except:
+        - 10.244.0.0/16 # determine the pod cidr from installed CNI plugin
+    ports:
+    - port: 80
+      protocol: TCP
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          run: nginx05            
+    ports:
+    - port: 80
+      protocol: TCP
+  - to: 
+    - ipBlock:
+        cidr: 0.0.0.0/0        
