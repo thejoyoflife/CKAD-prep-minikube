@@ -81,6 +81,16 @@ NOTE: The images are listed with comma separated as opposed to normal `jsonpath`
 k events -A -o json | jq -r '.items[] | select(.message | contains("Liveness probe failed")) | .involvedObject.namespace + "/" + .involvedObject.name'
 ```
 </p>
+</details>
+<details><summary>Find the events associated with a deployment "<b>deploy03</b>" and pods created by the deployment.</summary>
+NOTE: Pods created by a deployment will have names starting with the deployment's name.
+<p>
+
+```bash
+k get events -o json | jq -r '[.items[] | select(.involvedObject.name | contains("deploy03")) | .message]'
+```
+NOTE: In the above `jq` command, the output is wrapped in an array.
+</p>
 </details>   
 <details><summary>Finding a pod that has some text in it as labels or annotations.</summary>
 <p>
