@@ -63,7 +63,7 @@ k get pods --template='{{range $pi, $pod := .items}}{{range $si, $stat := $pod.s
 </details>
 
 ### Custom Columns:
-<details><summary>Show all the pod and their images in the current namespace under "<b>NAME</b>" and "<b>IMAGE</b>" columns.</summary>
+<details><summary>Show all the pod and their images in the current namespace under "<b>NAME</b>" and "<b>IMAGE</b>" columns. The images of a multicontainer pod must be separated by commas.</summary>
 <p>
 
 ```bash
@@ -82,8 +82,7 @@ k events -A -o json | jq -r '.items[] | select(.message | contains("Liveness pro
 ```
 </p>
 </details>
-<details><summary>Find the events associated with a deployment "<b>deploy03</b>" and pods created by the deployment.</summary>
-NOTE: Pods created by a deployment will have names starting with the deployment's name.
+<details><summary>Find the event messages associated with objects that have "<b>deploy03</b>" text in their names.</summary>
 <p>
 
 ```bash
@@ -92,11 +91,11 @@ k get events -o json | jq -r '[.items[] | select(.involvedObject.name | contains
 NOTE: In the above `jq` command, the output is wrapped in an array.
 </p>
 </details>   
-<details><summary>Finding a pod that has some text in it as labels or annotations.</summary>
+<details><summary>Finding pods that has some text in it as labels or annotations in "<b>&lt;ns&gt;/&lt;name&gt;</b>" format.</summary>
 <p>
 
 ```bash
-k get pods -o json | jq -r '.items[] | .metadata.name as $podname | (.metadata.annotations | to_entries[] | select((.key | contains("<some_text>")) or (.value | contains("<some_text>"))) | $podname)' | uniq 
+k get pods -o json | jq -r '.items[] | [.metadata.namespace, .metadata.name] as [$ns, $podname] | (.metadata.annotations | to_entries[] | select((.key | contains("<some_text>")) or (.value | contains("<some_text>"))) | $ns + "/" + $podname)' | uniq 
 ```
 Note: Label search can be done in the same way.
 </p>
@@ -127,7 +126,7 @@ Will create a deployment named `mydep`, it's `selector` and the pod label are bo
 ```bash
 k set image pod/nginx nginx-cont=nginx:alpine
 ```
-This just restarts the `nginx-cont` container of the pod `nginx` with the new image `nginx:alpine` - pod itself doesn't restart; hence the IP of it stays the same.
+This just restarts the `nginx-cont` container of the pod `nginx` with the new image `nginx:alpine` - pod itself doesn't restart; hence the IP of it stays the same. However, the "Restart Count" (count shown under "RESTARTS" column of "`k get pod nginx`" output) of the pod gets increasd along the way.
 </p>
 
 - `pod.spec.containers.securityContext.readOnlyRootFilesystem` can be set to `true` to make a linux container's root filesystem as "__read-only__" - the processes in the container can not write anyting to the root filesystem.
@@ -158,7 +157,7 @@ This just restarts the `nginx-cont` container of the pod `nginx` with the new im
 - <details><summary>"<i>wget</i>" a set of pods in a single command.</summary>
 
   ```bash
-  k get pods -l app=foo -o wide | awk '{print $6}' | grep -v IP | xargs -i kubectl run tmp --image busybox --rm -it --restart Never --image-pull-policy IfNotPresent -- wget -qO- \{\}:8080 -T 2
+  k get pods -l app=foo -o wide | awk '{print $6}' | grep -v IP | xargs -i kubectl run tmp --image busybox --rm -it --restart Never --image-pull-policy IfNotPresent -- wget -qO- {}:8080 -T 2
   ```
 </details>
 
@@ -199,15 +198,19 @@ This just restarts the `nginx-cont` container of the pod `nginx` with the new im
    This returns pods that don't have `env` label associated with them.
 </details>  
 
-- <details><summary>To make <i>kubectl</i> wait for a certain time for a <i>job</i> to complete and also write another command where it will wait upto a certain time for all the pods in the current namespace with a certain label to be in <i>Running</i> state.</summary>
+- <details><summary>To make <i>kubectl</i> wait for a certain condition to be met for certain objects</summary>
    
-   *   
+   * To wait for 10 seconds for a job to complete:   
    ```bash
-   k wait --for=condition=complete jobs/pi --timout 10s
-   ```   
-   *    
+   k wait --for=condition=complete jobs/pi --timeout 10s
+   ```
+   * To wait for 15 seconds for pods with label `app: nginx` to be in "Running" state.
    ```bash
    k wait --for=jsonpath='{.status.phase}'=Running pods -l app=nginx --timeout 15s
+   ```
+   * To wait for a pod to be in "Ready" state:
+   ```bash
+   k wait --for=condition=ready po/nginx
    ```
 </details>   
 
@@ -216,14 +219,14 @@ This just restarts the `nginx-cont` container of the pod `nginx` with the new im
 - <details><summary>Copy an existing pod</summary>
 
   ```bash
-  k debug <existing_pod_name> --copy-to <new-pod-name> --set-image=<existing_cont_name>=<same_image>
+  k debug <existing_pod_name> --copy-to debug-pod -c debug-cont --image bash -- sleep 3600
   ```
-  `--set-image` needs to be given even though it seems to be redundant.
+  This will create a new pod named `debug-pod` copied from the given "existing_pod_name", and will add one more container named `debug-cont` in the pod off the image `bash` where `sleep 3600` command will be running inside the container. Later on, I could `exec` into the `debug-cont` of `debug-pod` to troubleshoot things - `k exec -it debug-pod -c debug-cont -- bash`.
 </details>
 
 - Ephemeral volumes are, by default, mounted in the container filesystems with full permissions for everyones and with owner/group as root. Persistent volumes are also mounted with owner/group as root, but the write permission on the directory is prohibited for group and other users. For both type of volumes, no write permissions are given to group or others for new files/directories created in the mount point (`i.e. -rw-r--r--`).
     * Ephemeral mountpoint permission would look like this:
-    `drwxrwxrwx    2 root     root          4096 May  20 14:47 /tmp/share`
+    `drwxrwxrwx    2 root     root          4096 May  20 14:47 /tmp/share` => NOTE: Memory backed ephemeral volumes (`emptyDir -> medium: Memory`) will have `sticky bit (t)` (`drwxrwxrwt`) set in the permission set of the mount point directory.
     * PV mountpoint permission would look like this:
     `drwxr-xr-x    2 root     root            40 May  20 14:47 /tmp/pvshare`
 
