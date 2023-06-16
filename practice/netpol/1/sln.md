@@ -7,7 +7,7 @@
     * `k debug nginx05 --image busybox -c sidecar -- sleep infinity`
     * `k debug httpd05 --image busybox -c sidecar -- sleep infinity`
     * `k debug redis05 --image busybox -c sidecar -- sleep infinity`
-- Create a "__deny-all-except-dns__" kind of `NetworkPolicy` object to disable all `ingress` traffic for all the pods in the namespace, and only allow `egress` DNS traffic from all of them. Apply the policy: `k apply -f deny-all.yaml`.
+- Create a "__only-dns__" type of `NetworkPolicy` object to disable all `ingress` traffic for all the pods in the namespace except `egress` to DNS traffic from all of them. Apply the policy: `k apply -f only-dns.yaml`.
 - Verify the connectivity between the pods and internet. At this time, only the DNS traffic should be allowed for each of the above pods - no `ingress` traffic should be able to reach those pods. To test the connectivity as per the requirement, try by connecting to each of the __sidecar__ containers from those 3 pods from 3 separate terminals. Also, run and `exec` on a shell of a temporary pod in a different namespace to test/simulate `ingress` traffic to those pods from the internet (`k run tmp -n <another_namespace> --image busybox -it --rm --restart Never --image-pull-policy IfNotPresent -- sh`).
     * Use `wget -qO- <pod_ip> -T 2` to test web connectivity between `nginx05` and `httpd05` pods.
     * Use `wget -qO- ifconfig.me -T 2` to test `egress` connectivity from the pods to the internet.
