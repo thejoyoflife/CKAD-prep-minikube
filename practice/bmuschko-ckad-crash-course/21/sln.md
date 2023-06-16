@@ -3,7 +3,7 @@
 - `k create sa api-call`
 - Create the pod that sends a curl request to the Kubernetes API server to retrieve "service" list in "default" namespace in every 10 seconds using a `alpine:curl` image. The request should also include a Bearer token mounted in every pods inside `/var/run/secrets/kubernetes.io/serviceaccount/token` file. Then, `k apply -f pod.yaml`.
 - In a separate terminal, `k logs service-list -f` => logs should show that the api calls are returning with Forbidden (403) status code. 
-- Since the pod is running in `t23` namespace, and it needs access to service list in the `default` namespace, we need to create cluster role and cluster rolebinding objects that works across namespace accesses.
-- `k create clusterrole api-call --verb=list,get --resource=svc` => `list` verb alone should be fine.
-- `k create clusterrolebinding api-call --clusterrole=api-call --serviceaccount=t23:api-call`
-- Now, the logs in the pod should successfully return a list of service objects in the default namespace. 
+- Create a `ClusterRole` object as being asked => `k create clusterrole api-call --verb=list --resource=svc`
+- To allow access to "services" in `default` namespace from a pod running in `t23` namespace using a `RoleBinding` object, we need to create the object in the `default` namespace itself, not in `t23` namespace. Otherwise, we could create a `ClusterRoleBinding` object, but that would give much broader access (all namespaces) to the pod.
+- `k create rolebinding api-call -n default --clusterrole=api-call --serviceaccount=t23:api-call` => `-n default` is important here, otherwise the pod wouldn't get the required access.
+- Now, the logs in the pod should continue to return a list of service objects in the default namespace without any manual intervention. 
