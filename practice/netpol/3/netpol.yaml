@@ -1,0 +1,87 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: ing-all
+  namespace: ns-01923
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  ingress:
+  - ports:
+    - port: 32000
+      endPort: 32768
+      protocol: TCP
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: ing-all
+  namespace: ns-01923
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          tag: allowed
+      namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: 10oap3
+    - podSelector:
+        matchLabels:
+          tag: whitelisted      
+---
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: egress-google
+  namespace: ns-01923
+spec:
+  podSelector: {}
+  policyTypes:
+  - Egress
+  egress:
+  - to:
+    - ipBlock:
+        cidr: 172.217.16.78/32
+    ports:
+    - port: 80
+      protocol: TCP
+    - port: 443
+      protocol: TCP
+  - ports:
+    - port: 53
+      protocol: TCP
+    - port: 53
+      protocol: UDP    
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: egress-google
+  namespace: ns-01923
+spec:
+  podSelector:
+    matchLabels:
+      tag: abc456
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          check: itson
+      namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: plq-2 
+    - podSelector:
+        matchLabels:
+          tag: pqr123
